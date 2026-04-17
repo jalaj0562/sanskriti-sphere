@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>Sanskriti Sphere — India's Living Heritage</title>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Cormorant+Garamond:wght@400;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════ RESET & TOKENS ══════════════ */
+:root{
+  --saf:#FF6B1A;--saf2:#E8A020;--gld:#D4A017;--gld2:#F2C94C;
+  --tl:#14BDAC;--ivy:#FAF3E0;--dp:#08060A;--dk:#120C04;
+  --sf:#1C1208;--card:#231A08;--brd:#3A280A;--mu:#9A7850;--dm:#4A3418;
+  --ok:#3DD68C;--err:#F06070;--cr:#8B1A1A;
+  --r:16px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Jost',sans-serif;background:var(--dp);color:var(--ivy);overflow-x:hidden;min-height:100vh}
+img,canvas,svg{max-width:100%;display:block}
+button{cursor:pointer;font-family:'Jost',sans-serif}
+a{cursor:pointer;text-decoration:none}
+
+/* ══════════════ SCROLLBAR ══════════════ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--brd);border-radius:10px}
+
+/* ══════════════ BACKGROUND DECOR ══════════════ */
+.bg-glow{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 15% 20%,rgba(255,107,26,.07) 0%,transparent 50%),
+             radial-gradient(ellipse at 85% 80%,rgba(212,160,23,.08) 0%,transparent 50%)}
+.ring{position:fixed;border-radius:50%;border:1px solid rgba(212,160,23,.05);pointer-events:none;z-index:0;animation:rspin linear infinite}
+.ring:nth-child(1){width:min(700px,100vw);height:min(700px,100vw);top:-20%;right:-15%;animation-duration:90s}
+.ring:nth-child(2){width:min(500px,80vw);height:min(500px,80vw);bottom:-15%;left:-10%;animation-duration:70s;animation-direction:reverse}
+@keyframes rspin{to{transform:rotate(360deg)}}
+.pts-wrap{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.pt{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--gld2);animation:ptfly linear infinite}
+@keyframes ptfly{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:.5}90%{opacity:.3}100%{transform:translateY(-10vh) translateX(var(--dx));opacity:0}}
+
+/* ══════════════ LOADER ══════════════ */
+#loader{position:fixed;inset:0;background:var(--dp);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .8s,visibility .8s}
+#loader.out{opacity:0;visibility:hidden;pointer-events:none}
+.lom{font-size:clamp(56px,10vw,80px);color:var(--saf);animation:ompulse 2s ease-in-out infinite;text-shadow:0 0 40px rgba(255,107,26,.6)}
+@keyframes ompulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.ltxt{font-family:'Yatra One',cursive;font-size:clamp(16px,3vw,22px);color:var(--gld2);letter-spacing:4px}
+.lbar{width:min(200px,60vw);height:2px;background:var(--brd);border-radius:2px;overflow:hidden}
+.lfill{height:100%;background:linear-gradient(90deg,var(--saf),var(--gld2));animation:lf 2.5s ease forwards}
+@keyframes lf{from{width:0}to{width:100%}}
+.lsub{font-size:11px;color:var(--mu);letter-spacing:2px}
+
+/* ══════════════ TOAST ══════════════ */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--card);border:1px solid var(--brd);border-radius:12px;
+  padding:12px 22px;font-size:13px;font-weight:500;z-index:9999;
+  white-space:nowrap;opacity:0;transition:all .3s;pointer-events:none;
+  max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{border-color:var(--ok);color:var(--ok)}
+#toast.err{border-color:var(--err);color:var(--err)}
+#toast.inf{border-color:var(--gld);color:var(--gld)}
+
+/* ══════════════ NAV ══════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;
+  padding:clamp(12px,2vw,18px) clamp(16px,4vw,48px);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:linear-gradient(to bottom,rgba(8,6,10,.97) 60%,transparent);
+  backdrop-filter:blur(6px)}
+.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-em{width:38px;height:38px;background:linear-gradient(135deg,var(--saf),var(--gld));
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--dk);box-shadow:0 0 18px rgba(255,107,26,.45);
+  animation:eglow 3s ease-in-out infinite;flex-shrink:0}
+@keyframes eglow{0%,100%{box-shadow:0 0 18px rgba(255,107,26,.4)}50%{box-shadow:0 0 34px rgba(255,107,26,.7)}}
+.nav-brand{font-family:'Yatra One',cursive;font-size:clamp(15px,2.5vw,20px);
+  background:linear-gradient(135deg,var(--saf),var(--gld2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-sub{font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:clamp(14px,2vw,28px);flex-wrap:wrap}
+.nav-links a{font-size:13px;color:var(--mu);font-weight:500;transition:color .2s;
+  position:relative;padding-bottom:3px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;
+  background:var(--saf);transform:scaleX(0);transition:transform .25s;border-radius:2px}
+.nav-links a:hover,.nav-links a.active{color:var(--ivy)}
+.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
+.nav-cta{padding:9px 18px;background:linear-gradient(135deg,var(--saf),var(--saf2));
+  color:var(--dk);border:none;border-radius:100px;font-size:12px;font-weight:700;
+  transition:all .2s;white-space:nowrap;flex-shrink:0}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,26,.5)}
+/* Hamburger for mobile */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px}
+.hamburger span{width:22px;height:2px;background:var(--mu);border-radius:2px;transition:all .3s}
+.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;
+  background:rgba(8,6,10,.98);border-bottom:1px solid var(--brd);
+  padding:20px;flex-direction:column;gap:16px;z-index:499}
+.mob-menu.open{display:flex}
+.mob-menu a{font-size:15px;color:var(--mu);font-weight:500;padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.05)}
+.mob-menu a:hover{color:var(--ivy)}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .nav-cta{display:none}
+}
+
+/* ══════════════ HERO ══════════════ */
+.hero{position:relative;z-index:10;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(90px,15vh,130px) clamp(16px,5vw,60px) clamp(60px,8vh,90px);
+  text-align:center;overflow:hidden}
+.hero-svg{position:absolute;bottom:0;left:0;right:0;height:40%;opacity:.07;pointer-events:none;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;
+  border:1px solid rgba(255,107,26,.3);border-radius:100px;font-size:11px;
+  font-weight:500;color:var(--saf);letter-spacing:2px;text-transform:uppercase;
+  background:rgba(255,107,26,.06);margin-bottom:24px;animation:slideup .8s ease both}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--saf);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hero h1{font-family:'Yatra One',cursive;font-size:clamp(32px,8vw,88px);
+  line-height:1.05;color:var(--ivy);margin-bottom:10px;animation:slideup .8s .12s ease both}
+.hero-grad{background:linear-gradient(135deg,var(--saf),var(--gld2),var(--saf2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block}
+.hero-deva{font-size:clamp(12px,2vw,17px);color:var(--mu);letter-spacing:3px;
+  margin-bottom:20px;animation:slideup .8s .22s ease both}
+.hero p{max-width:560px;font-size:clamp(14px,2vw,16px);font-weight:300;color:var(--mu);
+  line-height:1.7;margin:0 auto 36px;animation:slideup .8s .32s ease both}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:slideup .8s .42s ease both}
+.hero-stats{display:flex;gap:clamp(20px,4vw,48px);justify-content:center;margin-top:48px;
+  flex-wrap:wrap;animation:slideup .8s .52s ease both}
+.stat-num{font-family:'Yatra One',cursive;font-size:clamp(26px,5vw,36px);
+  background:linear-gradient(135deg,var(--gld),var(--gld2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-lbl{font-size:10px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+@keyframes slideup{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════ BUTTONS ══════════════ */
+.btn-pri{padding:clamp(12px,2vw,15px) clamp(22px,4vw,34px);
+  background:linear-gradient(135deg,var(--saf),var(--saf2));color:var(--dk);
+  border:none;border-radius:12px;font-size:clamp(13px,1.8vw,15px);font-weight:700;
+  transition:all .25s;box-shadow:0 6px 24px rgba(255,107,26,.35)}
+.btn-pri:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(255,107,26,.5)}
+.btn-pri:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-out{padding:clamp(12px,2vw,15px) clamp(22px,4vw,34px);
+  background:transparent;color:var(--ivy);border:1.5px solid var(--brd);
+  border-radius:12px;font-size:clamp(13px,1.8vw,15px);font-weight:500;transition:all .25s}
+.btn-out:hover{border-color:var(--saf);color:var(--saf);transform:translateY(-2px)}
+.btn-sm{padding:9px 18px;font-size:12px;font-weight:600;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--saf),var(--saf2));color:var(--dk);transition:all .2s}
+.btn-sm:hover{transform:scale(1.04);box-shadow:0 4px 14px rgba(255,107,26,.4)}
+.btn-ghost{padding:9px 18px;font-size:12px;font-weight:500;border:1.5px solid var(--brd);
+  border-radius:10px;background:var(--sf);color:var(--mu);transition:all .2s}
+.btn-ghost:hover{border-color:var(--dm);color:var(--ivy)}
+
+/* ══════════════ PAGE TABS ══════════════ */
+.page-nav{position:relative;z-index:10;display:flex;justify-content:center;
+  gap:8px;padding:0 16px 36px;flex-wrap:wrap}
+.ptab{padding:10px clamp(14px,2vw,22px);border:1.5px solid var(--brd);border-radius:100px;
+  background:var(--sf);color:var(--mu);font-size:clamp(11px,1.8vw,13px);font-weight:500;
+  transition:all .22s}
+.ptab:hover{border-color:var(--dm);color:var(--ivy)}
+.ptab.active{background:linear-gradient(135deg,var(--saf),var(--saf2));
+  color:var(--dk);border-color:transparent;font-weight:700;box-shadow:0 4px 16px rgba(255,107,26,.3)}
+.page{display:none}.page.active{display:block;animation:slideup .4s ease both}
+
+/* ══════════════ SECTION COMMON ══════════════ */
+.section{position:relative;z-index:10;max-width:1240px;margin:0 auto;
+  padding:0 clamp(14px,4vw,48px) clamp(60px,8vw,100px)}
+.sec-label{font-size:11px;font-weight:600;color:var(--saf);text-transform:uppercase;
+  letter-spacing:3px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.sec-label::before{content:'';width:24px;height:1px;background:var(--saf)}
+.sec-title{font-family:'Yatra One',cursive;font-size:clamp(24px,4vw,44px);
+  color:var(--ivy);line-height:1.15;margin-bottom:12px}
+.sec-sub{font-size:clamp(13px,1.8vw,15px);color:var(--mu);font-weight:300;
+  max-width:540px;line-height:1.7;margin-bottom:36px}
+
+/* ══════════════ ORNAMENT DIVIDER ══════════════ */
+.orn{display:flex;align-items:center;gap:14px;margin:0 auto 56px;
+  max-width:360px;padding:0 clamp(14px,4vw,48px);position:relative;z-index:10}
+.orn-l{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--dm))}
+.orn-r{flex:1;height:1px;background:linear-gradient(90deg,var(--dm),transparent)}
+.orn-s{font-size:20px;color:var(--saf);opacity:.6}
+
+/* ══════════════ CARD BASE ══════════════ */
+.card{background:var(--card);border:1.5px solid var(--brd);border-radius:var(--r);overflow:hidden}
+
+/* ══════════════ TOUR PAGE ══════════════ */
+.mon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,20px)}
+.mon-grid .m-feat{grid-column:span 2}
+@media(max-width:900px){.mon-grid{grid-template-columns:1fr 1fr}.mon-grid .m-feat{grid-column:span 1}}
+@media(max-width:540px){.mon-grid{grid-template-columns:1fr}}
+.mcard{background:var(--card);border:1.5px solid var(--brd);border-radius:var(--r);
+  overflow:hidden;transition:all .3s;cursor:pointer;position:relative}
+.mcard:hover{transform:translateY(-5px);border-color:var(--saf);
+  box-shadow:0 18px 50px rgba(255,107,26,.2)}
+.mcard-vis{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:var(--sf)}
+.mcard.m-feat .mcard-vis{aspect-ratio:21/9}
+.mcard-vis canvas{width:100%;height:100%;display:block}
+.mcard-vis::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,var(--card) 0%,transparent 55%);pointer-events:none}
+.vr-tag{position:absolute;top:10px;right:10px;background:rgba(13,115,119,.92);
+  border:1px solid var(--tl);color:var(--tl);font-size:9px;font-weight:700;
+  letter-spacing:1.5px;padding:4px 10px;border-radius:100px;z-index:3;backdrop-filter:blur(4px)}
+.mcard-body{padding:clamp(14px,2vw,20px)}
+.m-era{font-size:9px;color:var(--saf);font-weight:600;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:4px}
+.m-name{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,24px);
+  font-weight:600;color:var(--ivy);margin-bottom:4px;line-height:1.2}
+.m-loc{font-size:11px;color:var(--mu);margin-bottom:8px}
+.m-desc{font-size:clamp(11px,1.5vw,13px);color:var(--dm);line-height:1.6;margin-bottom:12px}
+.m-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.tag{padding:3px 9px;background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.2);
+  border-radius:100px;font-size:9px;color:var(--saf);font-weight:500}
+.m-foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.m-rating{font-size:11px;color:var(--gld2);font-weight:500}
+
+/* ══════════════ TOUR MODAL ══════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(4,3,1,.96);z-index:600;
+  display:none;align-items:flex-start;justify-content:center;
+  padding:clamp(8px,2vw,20px);overflow-y:auto;backdrop-filter:blur(10px)}
+.modal-overlay.open{display:flex;animation:fdin .3s ease}
+@keyframes fdin{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--card);border:1px solid var(--brd);border-radius:20px;
+  width:100%;max-width:980px;animation:scalein .3s ease;flex-shrink:0;margin:auto}
+@keyframes scalein{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.modal-head{padding:clamp(14px,2vw,20px) clamp(16px,3vw,28px);
+  border-bottom:1px solid var(--brd);display:flex;align-items:center;
+  justify-content:space-between;position:sticky;top:0;background:var(--card);
+  z-index:5;border-radius:20px 20px 0 0}
+.modal-title{font-family:'Yatra One',cursive;font-size:clamp(16px,2.5vw,22px);color:var(--ivy)}
+.modal-close{width:34px;height:34px;border-radius:50%;background:var(--sf);
+  border:1px solid var(--brd);color:var(--mu);font-size:16px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.modal-close:hover{background:var(--brd);color:var(--ivy)}
+.modal-body{padding:clamp(14px,3vw,24px)}
+
+/* VIEW MODE BUTTONS */
+.view-modes{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
+.vbtn{padding:8px clamp(10px,2vw,16px);background:var(--sf);border:1.5px solid var(--brd);
+  color:var(--mu);border-radius:10px;font-size:clamp(11px,1.6vw,13px);font-weight:500;
+  display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
+.vbtn:hover{border-color:var(--dm);color:var(--ivy)}
+.vbtn.active{background:linear-gradient(135deg,var(--saf),var(--saf2));
+  color:var(--dk);border-color:transparent;font-weight:700}
+
+/* VIEWPORT */
+.viewport{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;
+  overflow:hidden;position:relative;border:1px solid var(--brd);margin-bottom:16px;
+  cursor:crosshair;min-height:160px}
+#tour-canvas{width:100%;height:100%;display:block}
+.compass{position:absolute;top:10px;right:10px;width:40px;height:40px;
+  border-radius:50%;background:rgba(10,6,2,.88);border:1px solid var(--brd);
+  display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:4}
+.needle{width:3px;height:16px;background:linear-gradient(to top,var(--cr) 50%,var(--ivy) 50%);
+  border-radius:2px;transform-origin:50% 100%;animation:ns 8s linear infinite}
+@keyframes ns{to{transform:rotate(360deg)}}
+.view-label{position:absolute;top:10px;left:10px;background:rgba(10,6,2,.9);
+  border:1px solid var(--brd);border-radius:8px;padding:7px 12px;
+  pointer-events:none;z-index:4;backdrop-filter:blur(4px);max-width:55%}
+.vl-title{font-size:10px;color:var(--saf);font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.vl-desc{font-size:10px;color:var(--mu);margin-top:2px;line-height:1.4}
+.walk-bar{position:absolute;bottom:10px;left:10px;right:54px;z-index:4}
+.walk-track{height:3px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden}
+.walk-fill{height:100%;background:linear-gradient(90deg,var(--saf),var(--gld2));
+  border-radius:3px;transition:width .3s}
+.walk-pos{font-size:9px;color:rgba(255,255,255,.5);margin-top:4px;letter-spacing:.5px}
+
+/* HOTSPOT TOOLTIP on canvas */
+.hs-tip{position:absolute;background:rgba(14,9,2,.97);border:1px solid var(--saf);
+  border-radius:10px;padding:12px 14px;max-width:260px;z-index:10;display:none;
+  backdrop-filter:blur(6px);pointer-events:auto}
+.hs-tip.show{display:block;animation:slideup .22s ease}
+.hs-tip-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;
+  color:var(--gld2);margin-bottom:5px}
+.hs-tip-text{font-size:11px;color:var(--mu);line-height:1.6}
+.hs-tip-x{font-size:10px;color:var(--saf);margin-top:7px;cursor:pointer;display:block}
+
+/* INFO GRID */
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.5vw,14px);margin-bottom:16px}
+@media(max-width:480px){.info-grid{grid-template-columns:1fr 1fr}}
+.info-cell{background:var(--sf);border:1px solid var(--brd);border-radius:10px;padding:12px}
+.info-lbl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.info-val{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,2vw,18px);color:var(--ivy);font-weight:600}
+.story-block{margin-bottom:16px}
+.story-block h3{font-family:'Yatra One',cursive;font-size:clamp(15px,2vw,19px);color:var(--gld2);margin-bottom:8px}
+.story-block p{font-size:clamp(12px,1.5vw,13px);color:var(--mu);line-height:1.8}
+.hs-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.hs-btn{display:flex;align-items:center;gap:6px;padding:9px 14px;
+  background:var(--sf);border:1.5px solid var(--brd);border-radius:10px;
+  font-size:clamp(11px,1.6vw,13px);color:var(--mu);transition:all .2s}
+.hs-btn:hover,.hs-btn.on{border-color:var(--saf);color:var(--ivy);background:rgba(255,107,26,.06)}
+.hs-btn.on{border-color:var(--gld);color:var(--gld);background:rgba(212,160,23,.07)}
+.hs-detail{background:rgba(255,107,26,.05);border:1px solid rgba(255,107,26,.18);
+  border-radius:10px;padding:14px;margin-bottom:14px;display:none}
+.hs-detail.show{display:block;animation:slideup .3s ease}
+.hs-detail h4{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gld2);margin-bottom:6px}
+.hs-detail p{font-size:12px;color:var(--mu);line-height:1.7}
+
+/* ══════════════ FEATURES PAGE ══════════════ */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,20px)}
+@media(max-width:800px){.feat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.feat-grid{grid-template-columns:1fr}}
+.feat-card{background:var(--card);border:1.5px solid var(--brd);border-radius:var(--r);
+  padding:clamp(18px,3vw,28px);transition:all .3s;cursor:pointer;overflow:hidden;position:relative}
+.feat-card::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 10%,rgba(255,107,26,.05),transparent 60%);pointer-events:none}
+.feat-card:hover,.feat-card.open{transform:translateY(-3px);border-color:var(--saf);
+  box-shadow:0 14px 40px rgba(0,0,0,.4)}
+.feat-card.open{background:rgba(255,107,26,.04)}
+.feat-icon{width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,107,26,.15),rgba(212,160,23,.1));
+  border:1px solid rgba(255,107,26,.25);display:flex;align-items:center;
+  justify-content:center;font-size:22px;margin-bottom:16px}
+.feat-title{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.2vw,20px);
+  font-weight:600;color:var(--ivy);margin-bottom:9px}
+.feat-desc{font-size:clamp(12px,1.5vw,13px);color:var(--mu);line-height:1.7;margin-bottom:10px}
+.feat-more{font-size:clamp(11px,1.5vw,12px);color:var(--mu);line-height:1.7;
+  display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--brd)}
+.feat-card.open .feat-more{display:block;animation:slideup .3s ease}
+
+/* ══════════════ INDIA 360 PAGE ══════════════ */
+.i360-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2vw,20px);margin-bottom:28px}
+@media(max-width:560px){.i360-grid{grid-template-columns:1fr}}
+.i360-card{background:var(--card);border:1.5px solid var(--brd);border-radius:var(--r);
+  padding:clamp(16px,3vw,24px);cursor:pointer;transition:all .25s}
+.i360-card:hover{border-color:var(--gld);transform:translateY(-3px)}
+.i360-icon{font-size:clamp(24px,4vw,32px);margin-bottom:10px}
+.i360-title{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.2vw,20px);
+  font-weight:600;color:var(--ivy);margin-bottom:7px}
+.i360-desc{font-size:clamp(11px,1.5vw,13px);color:var(--mu);line-height:1.6;margin-bottom:12px}
+.i360-prog{height:4px;background:var(--brd);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.i360-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--saf),var(--gld2))}
+.i360-meta{font-size:10px;color:var(--dm);display:flex;justify-content:space-between}
+
+/* ── Quiz ── */
+.quiz-wrap{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);
+  padding:clamp(20px,4vw,36px);max-width:680px;margin:0 auto 28px;display:none}
+.quiz-q{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.5vw,22px);
+  color:var(--ivy);line-height:1.4;margin-bottom:20px}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:480px){.quiz-opts{grid-template-columns:1fr}}
+.qopt{padding:clamp(10px,2vw,14px) clamp(12px,2vw,18px);background:var(--sf);
+  border:1.5px solid var(--brd);border-radius:10px;font-size:clamp(12px,1.6vw,14px);
+  color:var(--mu);text-align:left;transition:all .2s}
+.qopt:hover:not(:disabled){border-color:var(--saf);color:var(--ivy)}
+.qopt.correct{border-color:var(--ok)!important;background:rgba(61,214,140,.12)!important;color:var(--ok)!important}
+.qopt.wrong{border-color:var(--err)!important;background:rgba(240,96,112,.12)!important;color:var(--err)!important}
+.quiz-fb{font-size:clamp(11px,1.6vw,13px);color:var(--mu);line-height:1.6;
+  min-height:36px;margin-bottom:14px;font-style:italic}
+.quiz-bar{display:flex;justify-content:space-between;align-items:center}
+.quiz-score{font-family:'Yatra One',cursive;font-size:clamp(18px,3vw,22px);color:var(--gld2)}
+.quiz-prog-lbl{font-size:11px;color:var(--mu)}
+
+/* ── Leaderboard ── */
+.leaderboard{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden}
+.lb-head{padding:clamp(14px,2vw,18px) clamp(16px,3vw,22px);border-bottom:1px solid var(--brd);
+  display:flex;align-items:center;gap:10px}
+.lb-title{font-family:'Yatra One',cursive;font-size:clamp(15px,2.5vw,19px);color:var(--gld2)}
+.lb-row{display:flex;align-items:center;gap:clamp(8px,2vw,14px);
+  padding:clamp(10px,2vw,14px) clamp(14px,3vw,22px);
+  border-bottom:1px solid var(--brd);transition:background .2s}
+.lb-row:hover{background:rgba(255,107,26,.04)}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{font-family:'Yatra One',cursive;font-size:18px;width:30px;text-align:center;flex-shrink:0}
+.lb-av{width:34px;height:34px;border-radius:50%;background:var(--sf);
+  border:1.5px solid var(--brd);display:flex;align-items:center;justify-content:center;
+  font-size:17px;flex-shrink:0}
+.lb-name{flex:1;font-size:clamp(12px,1.8vw,14px);font-weight:500;color:var(--ivy)}
+.lb-sc{font-family:'Yatra One',cursive;font-size:clamp(14px,2vw,16px);color:var(--saf);flex-shrink:0}
+.lb-badge{font-size:9px;color:var(--tl);background:rgba(13,115,119,.15);
+  border:1px solid rgba(20,189,172,.2);padding:2px 7px;border-radius:100px;font-weight:500}
+.rank-1{color:var(--gld2)}.rank-2{color:#c0c0c0}.rank-3{color:#cd7f32}.rank-o{color:var(--mu);font-size:13px}
+
+/* ── AR Activity ── */
+.ar-demo{background:var(--card);border:1.5px solid var(--brd);border-radius:var(--r);
+  padding:clamp(20px,4vw,32px);margin-bottom:28px;text-align:center}
+.ar-demo h3{font-family:'Yatra One',cursive;font-size:clamp(18px,3vw,26px);color:var(--ivy);margin-bottom:10px}
+.ar-demo p{font-size:clamp(12px,1.6vw,14px);color:var(--mu);line-height:1.7;margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto}
+.ar-objects{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.ar-obj{padding:10px 16px;background:var(--sf);border:1.5px solid var(--brd);
+  border-radius:12px;cursor:pointer;transition:all .22s;text-align:center;min-width:90px}
+.ar-obj:hover,.ar-obj.sel{border-color:var(--tl);background:rgba(20,189,172,.08)}
+.ar-obj .ao-icon{font-size:clamp(22px,4vw,28px);margin-bottom:4px}
+.ar-obj .ao-name{font-size:10px;color:var(--mu);font-weight:500}
+.ar-obj.sel .ao-name{color:var(--tl)}
+#ar-canvas{width:100%;border-radius:10px;background:#000;border:1px solid var(--brd);display:block;max-height:240px}
+
+/* ── Map ── */
+.map-wrap{background:var(--card);border:1.5px solid var(--brd);border-radius:var(--r);
+  padding:clamp(20px,4vw,32px);margin-bottom:28px}
+.map-wrap h3{font-family:'Yatra One',cursive;font-size:clamp(18px,3vw,26px);color:var(--ivy);margin-bottom:10px}
+.map-wrap p{font-size:clamp(12px,1.6vw,14px);color:var(--mu);margin-bottom:16px}
+#map-canvas{width:100%;border-radius:10px;border:1px solid var(--brd);display:block;background:#0a0a14}
+.map-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.map-dot{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu)}
+.mdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ══════════════ AVATAR PAGE ══════════════ */
+.av-section{background:var(--card);border:1.5px solid var(--brd);border-radius:var(--r);
+  padding:clamp(20px,4vw,48px);display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(24px,4vw,48px);align-items:start}
+@media(max-width:640px){.av-section{grid-template-columns:1fr}}
+.av-title{font-family:'Yatra One',cursive;font-size:clamp(20px,4vw,36px);
+  color:var(--ivy);margin-bottom:12px;line-height:1.2}
+.av-desc{font-size:clamp(13px,1.8vw,15px);color:var(--mu);line-height:1.8;margin-bottom:14px}
+.av-selected-name{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,28px);
+  color:var(--gld2);margin-bottom:6px;min-height:38px;transition:all .3s}
+.av-selected-story{font-size:clamp(12px,1.6vw,13px);color:var(--mu);line-height:1.7;
+  margin-bottom:20px;font-style:italic;min-height:56px;transition:all .3s}
+.av-btns{display:flex;gap:10px;flex-wrap:wrap}
+.av-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:400px){.av-grid{grid-template-columns:repeat(3,1fr)}}
+.av-item{aspect-ratio:1;border-radius:14px;background:var(--sf);border:2px solid var(--brd);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;cursor:pointer;transition:all .22s;padding:8px}
+.av-item:hover,.av-item.sel{border-color:var(--saf);background:rgba(255,107,26,.07);transform:scale(1.05)}
+.av-item.sel{box-shadow:0 0 0 3px rgba(255,107,26,.2)}
+.av-emoji{font-size:clamp(22px,4vw,28px)}.av-label{font-size:8px;color:var(--mu);text-align:center;font-weight:500}
+.av-item.sel .av-label{color:var(--saf)}
+
+/* ══════════════ ABOUT PAGE ══════════════ */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2vw,20px);margin-bottom:28px}
+@media(max-width:580px){.about-grid{grid-template-columns:1fr}}
+.about-card{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:clamp(16px,3vw,24px)}
+.about-card h3{font-family:'Yatra One',cursive;font-size:clamp(15px,2.5vw,18px);color:var(--gld2);margin-bottom:10px}
+.about-card p,.about-card li{font-size:clamp(11px,1.5vw,13px);color:var(--mu);line-height:1.8}
+.about-card ul{padding-left:14px}.about-card li{margin-bottom:3px}
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.5vw,12px)}
+@media(max-width:540px){.tech-grid{grid-template-columns:1fr 1fr}}
+.tech-card{background:var(--sf);border:1px solid var(--brd);border-radius:10px;padding:14px;text-align:center}
+.tech-icon{font-size:clamp(20px,3vw,24px);margin-bottom:6px}
+.tech-name{font-size:11px;font-weight:600;color:var(--ivy);margin-bottom:3px}
+.tech-desc{font-size:9px;color:var(--mu)}
+
+/* ══════════════ VR MODAL ══════════════ */
+.vr-box{background:var(--card);border:1px solid var(--brd);border-radius:20px;
+  max-width:580px;width:100%;padding:clamp(24px,5vw,40px);text-align:center;animation:scalein .3s ease}
+.vr-box h2{font-family:'Yatra One',cursive;font-size:clamp(22px,4vw,30px);color:var(--ivy);margin-bottom:10px}
+.vr-box p{font-size:clamp(12px,1.6vw,14px);color:var(--mu);line-height:1.7;margin-bottom:22px}
+.vr-opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.vr-opt{background:var(--sf);border:1.5px solid var(--brd);border-radius:12px;
+  padding:clamp(14px,3vw,20px);cursor:pointer;transition:all .22s;text-align:center}
+.vr-opt:hover,.vr-opt.picked{border-color:var(--saf);background:rgba(255,107,26,.07)}
+.vr-opt .vi{font-size:clamp(24px,5vw,30px);margin-bottom:6px}
+.vr-opt .vn{font-size:clamp(12px,2vw,14px);font-weight:600;color:var(--ivy);margin-bottom:3px}
+.vr-opt.picked .vn{color:var(--saf)}.vr-opt .vd{font-size:10px;color:var(--mu)}
+.vr-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ══════════════ FOOTER ══════════════ */
+footer{position:relative;z-index:10;border-top:1px solid var(--brd);
+  padding:clamp(24px,4vw,36px) clamp(16px,4vw,48px);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.foot-brand{font-family:'Yatra One',cursive;font-size:clamp(15px,2.5vw,18px);color:var(--saf)}
+.foot-sub{font-size:10px;color:var(--mu);margin-top:2px}
+.foot-right{font-size:11px;color:var(--dm);text-align:right}
+</style>
+</head>
+<body>
+
+<!-- BG -->
+<div class="bg-glow"></div>
+<div class="ring"></div><div class="ring"></div>
+<div class="pts-wrap" id="pts"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="lom">ॐ</div>
+  <div class="ltxt">संस्कृति स्फेयर</div>
+  <div class="lbar"><div class="lfill"></div></div>
+  <div class="lsub">LOADING HERITAGE…</div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-em">ॐ</div>
+    <div>
+      <div class="nav-brand">Sanskriti Sphere</div>
+      <div class="nav-sub">India's Living Heritage</div>
+    </div>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a onclick="goPage('tour',this)">Virtual Tour</a>
+    <a onclick="goPage('features',this)">Features</a>
+    <a onclick="goPage('india360',this)">India360</a>
+    <a onclick="goPage('avatar',this)">Avatars</a>
+    <a onclick="goPage('about',this)">About</a>
+  </div>
+  <button class="nav-cta" onclick="openVR()">🥽 VR Mode</button>
+  <button class="hamburger" id="ham" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <a onclick="goPage('tour');closeMenu()">🏛️ Virtual Tour</a>
+  <a onclick="goPage('features');closeMenu()">⚙️ Features</a>
+  <a onclick="goPage('india360');closeMenu()">📚 India360</a>
+  <a onclick="goPage('avatar');closeMenu()">👤 Avatars</a>
+  <a onclick="goPage('about');closeMenu()">ℹ️ About</a>
+  <a onclick="openVR();closeMenu()">🥽 Enter VR Mode</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <svg class="hero-svg" viewBox="0 0 1440 400" fill="var(--saf)" preserveAspectRatio="xMidYMax slice">
+    <rect x="0" y="380" width="1440" height="20"/>
+    <polygon points="720,60 680,150 760,150"/><polygon points="720,80 660,200 780,200"/>
+    <rect x="680" y="200" width="80" height="180"/><rect x="660" y="230" width="20" height="150"/><rect x="760" y="230" width="20" height="150"/>
+    <polygon points="400,150 375,210 425,210"/><rect x="380" y="210" width="40" height="170"/>
+    <polygon points="1040,150 1015,210 1065,210"/><rect x="1020" y="210" width="40" height="170"/>
+  </svg>
+  <div class="hero-badge"><div class="badge-dot"></div>AR / VR · Immersive Heritage Experience</div>
+  <h1>भारत की विरासत<span class="hero-grad">Comes Alive</span></h1>
+  <div class="hero-deva">संस्कृति स्फेयर — जहाँ इतिहास साँस लेता है</div>
+  <p>Step inside India's ancient monuments. Walk through Khajuraho, see the Taj Mahal under moonlight, and hear stories etched in stone — from anywhere in the world.</p>
+  <div class="hero-btns">
+    <button class="btn-pri" onclick="goPage('tour');scrollToNav()">🏛️ Start Virtual Tour</button>
+    <button class="btn-out" onclick="openVR()">🥽 Try in VR</button>
+  </div>
+  <div class="hero-stats">
+    <div><div class="stat-num">500+</div><div class="stat-lbl">Heritage Sites</div></div>
+    <div><div class="stat-num">10K+</div><div class="stat-lbl">Artifacts Mapped</div></div>
+    <div><div class="stat-num">22</div><div class="stat-lbl">Languages</div></div>
+    <div><div class="stat-num">360°</div><div class="stat-lbl">Immersive View</div></div>
+  </div>
+</div>
+
+<!-- PAGE TABS -->
+<div class="page-nav" id="pageNav">
+  <button class="ptab active" onclick="goPage('tour',null,this)">🏛️ Virtual Tour</button>
+  <button class="ptab" onclick="goPage('features',null,this)">⚙️ Features</button>
+  <button class="ptab" onclick="goPage('india360',null,this)">📚 India360</button>
+  <button class="ptab" onclick="goPage('avatar',null,this)">👤 Avatars</button>
+  <button class="ptab" onclick="goPage('about',null,this)">ℹ️ About</button>
+</div>
+
+<!-- ████ TOUR PAGE ████ -->
+<div class="page active" id="page-tour">
+<div class="section">
+  <div class="sec-label">Virtual Exploration</div>
+  <div class="sec-title">Choose Your Destination</div>
+  <div class="sec-sub">Click any monument card or a glowing hotspot pin on the canvas to explore detailed information.</div>
+  <div class="mon-grid" id="monGrid"></div>
+</div>
+</div>
+
+<!-- ████ FEATURES PAGE ████ -->
+<div class="page" id="page-features">
+<div class="section">
+  <div class="sec-label">Platform Capabilities</div>
+  <div class="sec-title">Every Grain of History, Preserved</div>
+  <div class="sec-sub">Click any card to expand full details. Sanskriti Sphere uses AI, AR and VR to bring heritage alive.</div>
+  <div class="feat-grid">
+    <div class="feat-card" onclick="toggleFeat(this)">
+      <div class="feat-icon">🥽</div>
+      <div class="feat-title">Immersive 3D Environments</div>
+      <div class="feat-desc">Photo-realistic reconstructions built using photogrammetry and Unity Engine. Walk every corridor as it appeared centuries ago.</div>
+      <div class="feat-more">Our 3D environments are built from thousands of photographs processed through photogrammetry. Each monument is scanned at millimetre precision. Textures include real material data — marble roughness, stone weathering, painted plaster. Environments update seasonally to reflect how the site looks at different times of year and day.</div>
+    </div>
+    <div class="feat-card" onclick="toggleFeat(this)">
+      <div class="feat-icon">🤖</div>
+      <div class="feat-title">AI Storytelling Guide</div>
+      <div class="feat-desc">A personal AI historian narrates your journey in 22 languages, adapting to your interests using GPT-powered NLP.</div>
+      <div class="feat-more">Powered by GPT and IndicNLP, the guide speaks 22 Indian languages plus 15 global ones. It adjusts vocabulary for children vs researchers, references your declared interests (architecture, art, warfare, religion), and answers questions in real-time. Accuracy is verified with Ministry of Tourism databases and peer-reviewed scholarship.</div>
+    </div>
+    <div class="feat-card" onclick="toggleFeat(this)">
+      <div class="feat-icon">📜</div>
+      <div class="feat-title">Historical Re-enactments</div>
+      <div class="feat-desc">Witness key historical moments with holographic visuals — royal ceremonies, ancient battles, festivals.</div>
+      <div class="feat-more">Motion-captured animations combined with AI crowd simulations recreate royal durbars, religious processions, construction scenes, and pivotal battles. Every scene is scripted from primary historical sources and reviewed by historians at IIT and ASI. Users can choose their perspective — audience, participant, or aerial observer.</div>
+    </div>
+    <div class="feat-card" onclick="toggleFeat(this)">
+      <div class="feat-icon">📍</div>
+      <div class="feat-title">Interactive Hotspots</div>
+      <div class="feat-desc">Touch any artifact or architectural element on the canvas for instant AI-powered insights — dating, artist, cultural significance.</div>
+      <div class="feat-more">Over 50,000 hotspots mapped across 500+ sites. Each links to a knowledge graph containing provenance data, related artworks, comparative architecture, and bibliographic references. YOLO-based image recognition identifies unlabelled artifacts from user photographs with 94% accuracy.</div>
+    </div>
+    <div class="feat-card" onclick="toggleFeat(this)">
+      <div class="feat-icon">🌍</div>
+      <div class="feat-title">Remote Site Access</div>
+      <div class="feat-desc">Explore physically inaccessible heritage sites — deep caves, fragile ruins, restricted monuments — safely.</div>
+      <div class="feat-more">Many of India's most fragile sites are closed to physical visitors. Sanskriti Sphere provides the only immersive access to sites like the Bagh Caves, Undavalli cave shrines, and several ASI-restricted excavations. Drone photogrammetry captures these sites without physical intrusion or risk to the monuments.</div>
+    </div>
+    <div class="feat-card" onclick="toggleFeat(this)">
+      <div class="feat-icon">🌐</div>
+      <div class="feat-title">Multilingual Support</div>
+      <div class="feat-desc">Full support for 22 Indian languages and 15 global languages with authentic regional audio guides.</div>
+      <div class="feat-more">Built on IndicNLP and Bhashini APIs. Every page, hotspot, story, and quiz is available in Devanagari, Tamil, Telugu, Kannada, Malayalam, Bengali, Odia, Punjabi, Gujarati, Marathi, and more. Text-to-speech uses authentic regional voice actors — not synthetic TTS — for cultural authenticity and natural delivery.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ████ INDIA360 PAGE ████ -->
+<div class="page" id="page-india360">
+<div class="section">
+  <div class="sec-label">Interactive Learning</div>
+  <div class="sec-title">India360 — Learn, Quiz, Explore</div>
+  <div class="sec-sub">Gamified cultural education for students, teachers, and enthusiasts. Play every module below — all fully functional.</div>
+
+  <div class="i360-grid">
+    <div class="i360-card" onclick="showQuiz()">
+      <div class="i360-icon">🧠</div>
+      <div class="i360-title">Heritage Quiz</div>
+      <div class="i360-desc">Test your knowledge with adaptive questions. Difficulty adjusts to your score level.</div>
+      <div class="i360-prog"><div class="i360-fill" style="width:68%"></div></div>
+      <div class="i360-meta"><span>68% avg score</span><span>▶ Click to Play</span></div>
+    </div>
+    <div class="i360-card" onclick="showAR()">
+      <div class="i360-icon">🎭</div>
+      <div class="i360-title">AR Artifact Explorer</div>
+      <div class="i360-desc">Select an artifact and watch it come alive with AR scanning, historical overlay, and AI narration.</div>
+      <div class="i360-prog"><div class="i360-fill" style="width:45%"></div></div>
+      <div class="i360-meta"><span>40 artifacts</span><span>▶ Try Now</span></div>
+    </div>
+    <div class="i360-card" onclick="showMap()">
+      <div class="i360-icon">🗺️</div>
+      <div class="i360-title">Heritage Map Explorer</div>
+      <div class="i360-desc">Interactive map of India with major heritage sites. Click any site marker for instant information.</div>
+      <div class="i360-prog"><div class="i360-fill" style="width:82%"></div></div>
+      <div class="i360-meta"><span>500+ sites</span><span>▶ Explore</span></div>
+    </div>
+    <div class="i360-card" onclick="showDocumentary()">
+      <div class="i360-icon">📺</div>
+      <div class="i360-title">Story Documentaries</div>
+      <div class="i360-desc">Curated visual stories about Indian dynasties, artisans, and heritage — CBSE curriculum aligned.</div>
+      <div class="i360-prog"><div class="i360-fill" style="width:30%"></div></div>
+      <div class="i360-meta"><span>120+ episodes</span><span>▶ Watch</span></div>
+    </div>
+  </div>
+
+  <!-- QUIZ PANEL -->
+  <div class="quiz-wrap" id="quizPanel">
+    <div id="quizContent"></div>
+  </div>
+
+  <!-- AR PANEL -->
+  <div class="ar-demo" id="arPanel" style="display:none">
+    <h3>📱 AR Artifact Explorer</h3>
+    <p>Select an artifact below. The AR scanner will identify it, show its period, origin, and cultural significance in real-time.</p>
+    <div class="ar-objects">
+      <div class="ar-obj sel" onclick="selectAR(this,'Taj Mahal Miniature','Mughal · 1650 CE','Marble inlay miniature depicting the Taj Mahal. Used as diplomatic gifts by the Mughal court. The pietra dura technique involves cutting and fitting semi-precious stones into marble recesses.')">
+        <div class="ao-icon">🕌</div><div class="ao-name">Taj Miniature</div>
+      </div>
+      <div class="ar-obj" onclick="selectAR(this,'Nataraja Idol','Chola · 950 CE','Bronze lost-wax (cire perdue) casting of Shiva as Lord of Dance. The cosmic dance (ananda tandava) represents creation, preservation, and destruction. The ring of fire (prabhamandala) symbolises the cosmos.')">
+        <div class="ao-icon">🔱</div><div class="ao-name">Nataraja</div>
+      </div>
+      <div class="ar-obj" onclick="selectAR(this,'Ajanta Cave Painting','Satavahana · 200 CE','Cave 1 fresco using mineral pigments — lapis lazuli (blue), malachite (green), red ochre. The Bodhisattva Padmapani scene shows mastery of naturalistic form unknown elsewhere in the ancient world.')">
+        <div class="ao-icon">🖼️</div><div class="ao-name">Cave Fresco</div>
+      </div>
+      <div class="ar-obj" onclick="selectAR(this,'Khajuraho Apsara','Chandela · 1000 CE','Sandstone sculpture from the Kandariya Mahadeva temple exterior frieze. The surasundari (celestial beauty) demonstrates the Chandela sculptors\' mastery of sensuous form within a spiritual context.')">
+        <div class="ao-icon">🌸</div><div class="ao-name">Apsara</div>
+      </div>
+    </div>
+    <canvas id="ar-canvas" height="200"></canvas>
+  </div>
+
+  <!-- MAP PANEL -->
+  <div class="map-wrap" id="mapPanel" style="display:none">
+    <h3>🗺️ Heritage Map of India</h3>
+    <p>Click any glowing site marker on the map to view information about that heritage site.</p>
+    <canvas id="map-canvas" height="380"></canvas>
+    <div class="map-legend">
+      <div class="map-dot"><div class="mdot" style="background:#FF6B1A"></div>UNESCO World Heritage</div>
+      <div class="map-dot"><div class="mdot" style="background:#14BDAC"></div>State Heritage</div>
+      <div class="map-dot"><div class="mdot" style="background:#F2C94C"></div>National Monument</div>
+    </div>
+    <div id="map-info" style="margin-top:14px;display:none;padding:14px;background:var(--sf);border:1px solid var(--brd);border-radius:10px">
+      <strong id="map-site-name" style="font-family:'Yatra One',cursive;color:var(--gld2);font-size:16px"></strong>
+      <p id="map-site-info" style="font-size:12px;color:var(--mu);margin-top:6px;line-height:1.6"></p>
+    </div>
+  </div>
+
+  <!-- DOCUMENTARY PANEL -->
+  <div class="ar-demo" id="docPanel" style="display:none">
+    <h3>📺 Story Documentaries</h3>
+    <p>Watch curated heritage stories. Each episode is narrated by regional historians and aligned with CBSE curriculum.</p>
+    <div class="ar-objects">
+      <div class="ar-obj sel" onclick="selectDoc(this,'The Mughal Marble Masters','15 min','The artisans who built the Taj Mahal — where they came from, how pietra dura was mastered, and why the dome is mathematically perfect.')">
+        <div class="ao-icon">🕌</div><div class="ao-name">Mughal Masters</div>
+      </div>
+      <div class="ar-obj" onclick="selectDoc(this,'Vijayanagara — The Lost City','18 min','How Hampi became the world\'s second-largest city, the Battle of Talikota, and what the ruins reveal about a civilisation at its zenith.')">
+        <div class="ao-icon">🏛️</div><div class="ao-name">Lost City</div>
+      </div>
+      <div class="ar-obj" onclick="selectDoc(this,'Buddhist Art of Ajanta','12 min','The monks, the pigments, and the miracle of survival — how 1,300 years of jungle preserved the finest paintings of the ancient world.')">
+        <div class="ao-icon">🧘</div><div class="ao-name">Ajanta</div>
+      </div>
+      <div class="ar-obj" onclick="selectDoc(this,'Stones of Desire — Khajuraho','16 min','Why erotic sculptures decorate temples — the philosophical, artistic, and historical context of the Chandela masterworks.')">
+        <div class="ao-icon">🛕</div><div class="ao-name">Khajuraho</div>
+      </div>
+    </div>
+    <div id="doc-detail" style="background:var(--sf);border:1px solid var(--brd);border-radius:10px;padding:16px;margin-top:4px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+        <strong id="doc-title" style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gld2)">The Mughal Marble Masters</strong>
+        <span id="doc-dur" style="font-size:11px;color:var(--mu);background:var(--card);padding:3px 10px;border-radius:100px">15 min</span>
+      </div>
+      <p id="doc-desc" style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:14px">The artisans who built the Taj Mahal — where they came from, how pietra dura was mastered, and why the dome is mathematically perfect.</p>
+      <button class="btn-pri" onclick="toast('🎬 Documentary player launching…','inf')">▶ Play Episode</button>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="leaderboard">
+    <div class="lb-head"><span style="font-size:20px">🏆</span><div class="lb-title">Heritage Champions</div></div>
+    <div class="lb-row"><div class="lb-rank rank-1">①</div><div class="lb-av">🏛️</div><div class="lb-name">Arjun Sharma <span class="lb-badge">Scholar</span></div><div class="lb-sc">9,840</div></div>
+    <div class="lb-row"><div class="lb-rank rank-2">②</div><div class="lb-av">👸</div><div class="lb-name">Priya Nair <span class="lb-badge">Rani</span></div><div class="lb-sc">9,210</div></div>
+    <div class="lb-row"><div class="lb-rank rank-3">③</div><div class="lb-av">🧘</div><div class="lb-name">Rohan Verma <span class="lb-badge">Sage</span></div><div class="lb-sc">8,750</div></div>
+    <div class="lb-row"><div class="lb-rank rank-o">④</div><div class="lb-av">⚔️</div><div class="lb-name">Meera Iyer</div><div class="lb-sc">7,990</div></div>
+    <div class="lb-row"><div class="lb-rank rank-o">⑤</div><div class="lb-av">🎭</div><div class="lb-name">Dev Patel</div><div class="lb-sc">7,430</div></div>
+    <div class="lb-row"><div class="lb-rank rank-o" style="color:var(--saf)">—</div><div class="lb-av">🌿</div><div class="lb-name">You (Guest)</div><div class="lb-sc" id="mySc">0</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ████ AVATAR PAGE ████ -->
+<div class="page" id="page-avatar">
+<div class="section">
+  <div class="sec-label">Your Identity</div>
+  <div class="sec-title">Choose Your Cultural Avatar</div>
+  <div class="sec-sub">Each avatar comes with unique animations, regional attire, and AI-narrated cultural backstories.</div>
+  <div class="av-section">
+    <div>
+      <div class="av-title">Step Into History</div>
+      <div class="av-desc">Choose a character from India's rich cultural tapestry and step into the virtual world with their unique perspective on heritage.</div>
+      <div class="av-selected-name" id="avName">🏛️ The Scholar</div>
+      <div class="av-selected-story" id="avStory">A learned pandit from ancient Nalanda, keeper of sacred texts and seeker of cosmic truths. Your journey through heritage is guided by curiosity and reverence for knowledge.</div>
+      <div class="av-btns">
+        <button class="btn-pri" onclick="confirmAv()">✨ Select Avatar</button>
+        <button class="btn-out" onclick="toast('🎨 Attire customization coming in v2.0!','inf')">🎨 Customise</button>
+      </div>
+    </div>
+    <div class="av-grid" id="avGrid">
+      <div class="av-item sel" onclick="pickAv(this,'🏛️ The Scholar','A learned pandit from ancient Nalanda, keeper of sacred texts and seeker of cosmic truths. Your journey through heritage is guided by curiosity and reverence for knowledge.')"><div class="av-emoji">🏛️</div><div class="av-label">Scholar</div></div>
+      <div class="av-item" onclick="pickAv(this,'⚔️ The Warrior','A valiant kshatriya who defended the great kingdoms of the Deccan. Every monument is a fortress and every sculpture a warrior\'s prayer.')"><div class="av-emoji">⚔️</div><div class="av-label">Warrior</div></div>
+      <div class="av-item" onclick="pickAv(this,'🎭 The Artist','A master sculptor from the Hoysala court whose hands carved gods from living stone. Beauty in heritage speaks to you in ways words cannot.')"><div class="av-emoji">🎭</div><div class="av-label">Artist</div></div>
+      <div class="av-item" onclick="pickAv(this,'🧘 The Sage','A wandering ascetic who has walked from the Himalayas to Kanyakumari. Every sacred site holds a memory of your past journeys.')"><div class="av-emoji">🧘</div><div class="av-label">Sage</div></div>
+      <div class="av-item" onclick="pickAv(this,'👸 The Rani','A queen of the Maratha confederacy — fierce and cultured. Royal courts and palace architecture are your natural home.')"><div class="av-emoji">👸</div><div class="av-label">Rani</div></div>
+      <div class="av-item" onclick="pickAv(this,'🪘 The Musician','A court musician from Vijayanagara, fluent in Carnatic ragas and the language of temple bells. Culture lives in sound for you.')"><div class="av-emoji">🪘</div><div class="av-label">Musician</div></div>
+      <div class="av-item" onclick="pickAv(this,'🌿 The Vaidya','An Ayurvedic healer whose knowledge of plants was recorded on copper plates at Nalanda. Heritage is living wisdom for you.')"><div class="av-emoji">🌿</div><div class="av-label">Vaidya</div></div>
+      <div class="av-item" onclick="pickAv(this,'⚓ The Navigator','A Chola sailor who charted trade routes to Java and Cambodia. Every monument carries the memory of exchange and exploration.')"><div class="av-emoji">⚓</div><div class="av-label">Navigator</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ████ ABOUT PAGE ████ -->
+<div class="page" id="page-about">
+<div class="section">
+  <div class="sec-label">About the Platform</div>
+  <div class="sec-title">AI-Integrated AR/VR Heritage Platform</div>
+  <div class="sec-sub">Sanskriti Sphere is India's most ambitious digital heritage project — a bridge between tradition and modernity.</div>
+  <div class="about-grid">
+    <div class="about-card"><h3>🎯 Our Mission</h3><p>To make India's cultural heritage accessible to every person on Earth — breaking barriers of geography, language, and physical ability through immersive technology aligned with the Incredible India initiative.</p></div>
+    <div class="about-card"><h3>📊 Data Sources</h3><ul><li>Ministry of Tourism, India</li><li>Archaeological Survey of India (ASI)</li><li>UNESCO World Heritage Centre</li><li>Indian Council of Historical Research</li><li>State Tourism Boards (28 states)</li><li>IIT Heritage Research Labs</li></ul></div>
+    <div class="about-card"><h3>🤝 Collaborations</h3><ul><li>Incredible India — Ministry of Tourism</li><li>Digital India Programme</li><li>CBSE for educational modules</li><li>Google Arts &amp; Culture</li><li>National Museum, New Delhi</li><li>State Archaeological Departments</li></ul></div>
+    <div class="about-card"><h3>📈 Impact</h3><ul><li>500+ heritage sites digitised</li><li>10,000+ artifacts mapped</li><li>22 Indian languages supported</li><li>2M+ virtual visitors served</li><li>15,000+ schools enrolled</li><li>42 countries reached</li></ul></div>
+  </div>
+  <div class="sec-label">Technology Stack</div>
+  <div class="tech-grid">
+    <div class="tech-card"><div class="tech-icon">🧠</div><div class="tech-name">ResNet / YOLO / VGG</div><div class="tech-desc">Image recognition for Heritage Vision</div></div>
+    <div class="tech-card"><div class="tech-icon">💬</div><div class="tech-name">BERT / GPT / IndicNLP</div><div class="tech-desc">Multilingual NLP &amp; content generation</div></div>
+    <div class="tech-card"><div class="tech-icon">🎮</div><div class="tech-name">Unity &amp; Unreal Engine</div><div class="tech-desc">3D environments &amp; VR scenes</div></div>
+    <div class="tech-card"><div class="tech-icon">📱</div><div class="tech-name">ARKit &amp; ARCore</div><div class="tech-desc">Mobile AR for CulturaCam</div></div>
+    <div class="tech-card"><div class="tech-icon">☁️</div><div class="tech-name">AWS / Google Cloud</div><div class="tech-desc">Scalable storage &amp; delivery</div></div>
+    <div class="tech-card"><div class="tech-icon">📲</div><div class="tech-name">Flutter / React Native</div><div class="tech-desc">Cross-platform mobile interface</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ORNAMENT + FOOTER -->
+<div class="orn"><div class="orn-l"></div><div class="orn-s">❋</div><div class="orn-r"></div></div>
+<footer>
+  <div><div class="foot-brand">Sanskriti Sphere</div><div class="foot-sub">Part of the AI-Integrated AR/VR Heritage Platform</div></div>
+  <div style="font-size:26px;color:var(--saf);opacity:.5">ॐ</div>
+  <div class="foot-right">Data: Ministry of Tourism, India<br><span style="color:var(--saf)">Incredible India</span> · Digital Heritage</div>
+</footer>
+
+<!-- TOUR MODAL -->
+<div class="modal-overlay" id="tourModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">Virtual Tour</div>
+      <button class="modal-close" onclick="closeTour()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="view-modes">
+        <button class="vbtn active" onclick="setView(this,'walk')">🚶 Walk</button>
+        <button class="vbtn" onclick="setView(this,'aerial')">🦅 Aerial</button>
+        <button class="vbtn" onclick="setView(this,'story')">📖 Story</button>
+        <button class="vbtn" onclick="setView(this,'ar')">📱 AR</button>
+        <button class="vbtn" onclick="setView(this,'night')">🌙 Night</button>
+      </div>
+      <div class="viewport" id="viewport">
+        <canvas id="tour-canvas"></canvas>
+        <div class="compass"><div class="needle"></div></div>
+        <div class="view-label">
+          <div class="vl-title" id="vlTitle">🚶 Walking Tour</div>
+          <div class="vl-desc" id="vlDesc">Navigate on foot. Tap glowing pins to explore hotspots.</div>
+        </div>
+        <div class="walk-bar" id="walkBar">
+          <div class="walk-track"><div class="walk-fill" id="walkFill" style="width:0%"></div></div>
+          <div class="walk-pos" id="walkPos">ENTRANCE GATE</div>
+        </div>
+        <div class="hs-tip" id="hsTip">
+          <div class="hs-tip-title" id="hsTipTitle"></div>
+          <div class="hs-tip-text" id="hsTipText"></div>
+          <span class="hs-tip-x" onclick="this.parentElement.classList.remove('show')">✕ Close</span>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-lbl">Period</div><div class="info-val" id="infoPeriod">—</div></div>
+        <div class="info-cell"><div class="info-lbl">Location</div><div class="info-val" id="infoLoc">—</div></div>
+        <div class="info-cell"><div class="info-lbl">Style</div><div class="info-val" id="infoStyle">—</div></div>
+      </div>
+      <div class="story-block"><h3>📜 Historical Context</h3><p id="tourStory">—</p></div>
+      <div class="story-block"><h3>🔍 Click Hotspots to Explore</h3>
+        <div class="hs-list" id="hsList"></div>
+        <div class="hs-detail" id="hsDetail"><h4 id="hsTitle"></h4><p id="hsText"></p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VR MODAL -->
+<div class="modal-overlay" id="vrModal">
+  <div class="vr-box">
+    <div style="font-size:clamp(36px,8vw,48px);margin-bottom:10px">🥽</div>
+    <h2>Enter VR Mode</h2>
+    <p>Choose your VR device and begin an immersive tour of India's greatest heritage sites.</p>
+    <div class="vr-opts">
+      <div class="vr-opt picked" onclick="pickVR(this)"><div class="vi">🥽</div><div class="vn">VR Headset</div><div class="vd">Oculus, Meta Quest, HTC Vive</div></div>
+      <div class="vr-opt" onclick="pickVR(this)"><div class="vi">📱</div><div class="vn">Mobile VR</div><div class="vd">Google Cardboard, Daydream</div></div>
+      <div class="vr-opt" onclick="pickVR(this)"><div class="vi">💻</div><div class="vn">Browser 360°</div><div class="vd">No headset required</div></div>
+      <div class="vr-opt" onclick="pickVR(this)"><div class="vi">🖥️</div><div class="vn">Desktop 3D</div><div class="vd">Mouse &amp; keyboard control</div></div>
+    </div>
+    <div class="vr-btns">
+      <button class="btn-pri" onclick="launchVR()">🚀 Launch Experience</button>
+      <button class="btn-out" onclick="closeVR()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════
+const MONS = {
+  taj:{id:'taj',name:'Taj Mahal',loc:'Agra, Uttar Pradesh',era:'Mughal Era · 1632 AD',period:'1632–1653 AD',style:'Mughal',rating:4.9,rev:12400,badge:'360° VR',
+    tags:['Mughal','UNESCO','Marble Inlay','360° VR'],feat:true,
+    desc:'The world\'s most iconic monument of love — an ethereal marble mausoleum built by Emperor Shah Jahan. A UNESCO World Heritage Site.',
+    story:'Emperor Shah Jahan built the Taj Mahal between 1632–1653 as an eternal tribute to his wife Mumtaz Mahal. Over 20,000 artisans worked on this wonder. The white Makrana marble features 28 types of precious stones in intricate pietra dura patterns. The Charbagh gardens symbolise the four rivers of paradise. At dawn it glows pink; at noon dazzling white; at dusk golden.',
+    hs:{'Main Mausoleum':{i:'🕌',cx:.50,cy:.38,t:'Main Mausoleum',p:'The central domed structure contains the cenotaphs of Mumtaz Mahal and Shah Jahan. The main dome is 73m high surrounded by four smaller chattri domes. Interior walls have intricate Quranic inscriptions and pietra dura inlay.'},'Charbagh Gardens':{i:'🌿',cx:.50,cy:.80,t:'Charbagh Gardens',p:'The 300m×300m garden is divided into four quadrants by raised marble waterways. The central pool perfectly reflects the Taj — one of the most photographed reflections in the world. The garden symbolises paradise in Islamic tradition.'},'Mosque':{i:'🕍',cx:.22,cy:.44,t:'Mosque & Jawab',p:'Two identical red sandstone buildings flank the Taj. The western one is a functioning mosque. The eastern (Jawab) was built purely for symmetry — it faces the wrong direction to be used for prayer.'},'Minarets':{i:'🗼',cx:.28,cy:.26,t:'Four Minarets',p:'The four minarets stand 40m tall and tilt very slightly outward — a deliberate engineering decision so that if they fall during an earthquake, they fall away from the main tomb.'},'Pietra Dura':{i:'💎',cx:.73,cy:.34,t:'Pietra Dura Inlay',p:'Over 1 million precious stones — lapis lazuli from Afghanistan, turquoise from Tibet, jade from China, sapphires from Sri Lanka — were inlaid by Mughal craftsmen. Each flower petal is a single cut stone.'}},
+    draw:drawTaj},
+  khajuraho:{id:'khajuraho',name:'Khajuraho Temples',loc:'Madhya Pradesh',era:'Chandela · 950 AD',period:'950–1050 AD',style:'Nagara',rating:4.8,rev:8200,badge:'AR Scan',
+    tags:['Nagara Style','UNESCO','Medieval','Sculpture'],
+    desc:'Magnificent medieval temples with exquisite Nagara-style architecture and sculpture. Of the original 85 temples, 25 survive.',
+    story:'The Khajuraho temples were built by the Chandela dynasty between 950–1050 CE. Famous for their Nagara-style shikharas and erotic sculptures — but these represent only ~10% of the total artwork. The remaining 90% depict gods, apsaras, warriors, and daily life. The temples align astronomically with cardinal directions.',
+    hs:{'Kandariya':{i:'🛕',cx:.50,cy:.27,t:'Kandariya Mahadeva',p:'The largest temple, dedicated to Shiva. Its shikhara soars 31m with over 800 sculptures arranged in horizontal bands. Art historians consider this the high-water mark of medieval Indian sculpture.'},'Apsaras':{i:'🌸',cx:.76,cy:.50,t:'Apsara Carvings',p:'Celestial maidens depicted writing letters, applying makeup, playing music. Each is a genuine individual portrait — not a generic ideal. Carved by different masters over generations.'},'Plinth':{i:'⭐',cx:.50,cy:.84,t:'Star-shaped Plinth',p:'The star-shaped jagati platform creates complex shadow interplay. The geometry was calculated to dramatise the vertical thrust of the shikhara towers. Stairs are oriented to cardinal directions.'},'Sanctum':{i:'🔱',cx:.30,cy:.46,t:'Inner Sanctum',p:'The garbhagriha houses a massive Shiva lingam. Stone screens filter light creating a meditative interior of extraordinary stillness. The circumambulatory path allows ritual worship.'},'Mithuna':{i:'🎭',cx:.20,cy:.62,t:'Mithuna Sculptures',p:'Scholars debate their meaning — Tantric philosophy, worldly pleasures to leave at the threshold, or depictions of the 64 yoginis. Each figure is unique — no two are identical across the entire complex.'}},
+    draw:drawKhajuraho},
+  hampi:{id:'hampi',name:'Hampi Ruins',loc:'Karnataka',era:'Vijayanagara · 1336 AD',period:'14th–16th CE',style:'Vijayanagara',rating:4.7,rev:6800,badge:'3D Walk',
+    tags:['Dravidian','UNESCO','Ruins','Vijayanagara'],
+    desc:'The last capital of the Vijayanagara Empire — a surreal landscape of giant granite boulders and magnificent ruins.',
+    story:'Hampi was the Vijayanagara Empire capital — at its 16th-century peak the second-largest city in the world after Beijing with 500,000+ inhabitants across 650 sq km. In 1565, after the Battle of Talikota, the city was sacked and burned for six months, leaving 1,600 surviving monuments among otherworldly granite boulder landscapes.',
+    hs:{'Virupaksha':{i:'🏛️',cx:.30,cy:.40,t:'Virupaksha Temple',p:'The only temple still in active worship at Hampi, dedicated to Lord Virupaksha (Shiva). Its gopuram is 50m tall. An elephant named Lakshmi lives here and blesses visitors. Continuously functioning for 1,000+ years.'},'Stables':{i:'🐘',cx:.66,cy:.54,t:'Elephant Stables',p:'Eleven chambers in alternating Indo-Islamic style housed the royal war elephants. The stables reflect the cosmopolitan architectural taste of Vijayanagara, blending Hindu and Islamic styles seamlessly.'},'Lotus Mahal':{i:'🏰',cx:.72,cy:.33,t:'Lotus Mahal',p:'An exquisite palace pavilion with arched niches resembling a lotus bud in plan, built for the royal women. Combines Dravidian and Islamic architectural elements in perfect harmony.'},'Boulders':{i:'🪨',cx:.18,cy:.58,t:'Ancient Boulders',p:'The granite inselbergs surrounding Hampi are among the oldest rock formations on Earth — over 2.5 billion years old. Cave hermitages and shrines are carved into them throughout.'},'River':{i:'⛵',cx:.50,cy:.82,t:'Tungabhadra River',p:'Crossed by circular coracle boats covered in buffalo hide — still used today. The river was sacred and formed the northern boundary of the royal capital.'}},
+    draw:drawHampi},
+  ajanta:{id:'ajanta',name:'Ajanta Caves',loc:'Maharashtra',era:'2nd BCE – 6th CE',period:'200 BCE – 480 CE',style:'Buddhist',rating:4.9,rev:9100,badge:'Cave Explorer',
+    tags:['Buddhist','UNESCO','Rock-cut','Frescoes'],
+    desc:'Rock-cut Buddhist caves with the finest ancient Indian paintings and sculptures, rediscovered in 1819 after 1,300 years of jungle isolation.',
+    story:'The 30 Ajanta Caves were excavated over eight centuries by Buddhist monks. Rediscovered in 1819, they contain the finest surviving examples of ancient Indian painting — mineral pigments on wet plaster (true fresco). The site was abandoned after the decline of Gupta-era Buddhism and sealed by jungle for 1,300 years, which is precisely why the paintings survived.',
+    hs:{'Cave 1':{i:'🖼️',cx:.40,cy:.45,t:'Cave 1 — Bodhisattva Padmapani',p:'Contains the most celebrated painting in Indian art — the Bodhisattva Padmapani of extraordinary serenity. The blue pigment was lapis lazuli imported from Afghanistan along ancient trade routes.'},'Chaitya':{i:'🧘',cx:.60,cy:.34,t:'Chaitya Hall',p:'The prayer halls have apsidal ends with a stupa at the far end. Each cave was a self-contained monastery — monks slept, ate, prayed, and painted without leaving. The acoustics were designed for group chanting.'},'Jatakas':{i:'🦁',cx:.25,cy:.55,t:'Jataka Murals',p:'Illustrate the 547 past lives of the Buddha — as a deer, elephant, merchant, king. The narrative panels are read right to left, matching Sanskrit manuscript convention.'},'Gorge':{i:'🌊',cx:.76,cy:.70,t:'Waghora River Gorge',p:'The horseshoe-shaped gorge creates natural acoustics — a bell in one cave can be heard 300m away. The monks chose this location deliberately for its contemplative silence and running water.'},'Excavation':{i:'⛏️',cx:.55,cy:.70,t:'Rock-cut Technique',p:'Quarrying went top to bottom — ceiling first, then walls, then floor. A single mistake destroyed months of work. Modern engineers marvel at how monks achieved precise verticals without modern instruments.'}},
+    draw:drawAjanta}
+};
+
+const VIEWS_INFO={
+  walk:{title:'🚶 Walking Tour',desc:'Navigate the monument on foot. Click glowing hotspot pins for detailed information.',showBar:true},
+  aerial:{title:'🦅 Aerial View',desc:'Bird\'s-eye perspective at 200m altitude — observe full layout, symmetry and scale.',showBar:true},
+  story:{title:'📖 Story Mode',desc:'AI historian narrates the complete history with atmospheric lighting and overlays.',showBar:false},
+  ar:{title:'📱 AR Overlay',desc:'Augmented Reality — architectural annotations and dates projected live.',showBar:false},
+  night:{title:'🌙 Night Mode',desc:'Experience the monument under moonlight as ancient pilgrims saw it.',showBar:false}
+};
+const WALK_PTS=['ENTRANCE GATE','MAIN COURTYARD','CENTRAL STRUCTURE','SIDE GALLERIES','UPPER TERRACE','EXIT VIEWPOINT'];
+const FLY_PTS=['APPROACH (500m)','NORTH ELEVATION','ZENITH VIEW','EAST ELEVATION','DESCENT'];
+
+// ══════════════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════════════
+let toastTimer;
+function toast(msg,type='inf',dur=3000){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast show '+type;
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.className='toast',dur);
+}
+function scrollToNav(){document.getElementById('pageNav').scrollIntoView({behavior:'smooth',block:'start'})}
+
+// ══════════════════════════════════════════════════════
+//  LOADER + PARTICLES
+// ══════════════════════════════════════════════════════
+window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader').classList.add('out'),2800));
+const ptsWrap=document.getElementById('pts');
+for(let i=0;i<24;i++){const p=document.createElement('div');p.className='pt';p.style.cssText=`left:${Math.random()*100}%;animation-duration:${9+Math.random()*13}s;animation-delay:${Math.random()*12}s;--dx:${(Math.random()-.5)*120}px`;ptsWrap.appendChild(p)}
+
+// ══════════════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════════════
+function toggleMenu(){document.getElementById('mobMenu').classList.toggle('open')}
+function closeMenu(){document.getElementById('mobMenu').classList.remove('open')}
+
+function goPage(page,navEl,tabEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  if(navEl)navEl.classList.add('active');
+  else document.querySelectorAll('.nav-links a').forEach(a=>{if((a.getAttribute('onclick')||'').includes("'"+page+"'"))a.classList.add('active')});
+  if(tabEl)tabEl.classList.add('active');
+  else document.querySelectorAll('.ptab').forEach(t=>{if((t.getAttribute('onclick')||'').includes("'"+page+"'"))t.classList.add('active')});
+  if(page==='tour')setTimeout(drawAllThumbs,80);
+  closeMenu();
+}
+// Wire nav links
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',function(e){e.preventDefault();const m=(this.getAttribute('onclick')||'').match(/'([^']+)'/);if(m)goPage(m[1],this)});
+});
+
+// ══════════════════════════════════════════════════════
+//  FEATURES
+// ══════════════════════════════════════════════════════
+function toggleFeat(card){
+  const was=card.classList.contains('open');
+  document.querySelectorAll('.feat-card').forEach(c=>{c.classList.remove('open');c.querySelector('.feat-more').style.display='none'});
+  if(!was){card.classList.add('open');card.querySelector('.feat-more').style.display='block'}
+}
+document.querySelectorAll('.feat-more').forEach(x=>x.style.display='none');
+
+// ══════════════════════════════════════════════════════
+//  DRAW FUNCTIONS
+// ══════════════════════════════════════════════════════
+function drawTaj(cv,o={}){
+  const c=cv.getContext('2d'),W=cv.width=cv.offsetWidth||600,H=cv.height=cv.offsetHeight||320;
+  const ni=o.night||0,ai=o.aerial||0;
+  // Sky
+  const sk=c.createLinearGradient(0,0,0,H*.72);
+  if(ni>.5){sk.addColorStop(0,'#010308');sk.addColorStop(1,'#060f1a')}
+  else{sk.addColorStop(0,'#06101e');sk.addColorStop(.5,'#102038');sk.addColorStop(1,'#1c3050')}
+  c.fillStyle=sk;c.fillRect(0,0,W,H);
+  // Stars
+  const sc2=ni>.5?120:65;for(let i=0;i<sc2;i++){c.beginPath();c.arc(Math.random()*W,Math.random()*H*.65,Math.random()*1.3,0,Math.PI*2);c.fillStyle=`rgba(255,255,200,${.3+Math.random()*.7})`;c.fill()}
+  // Water
+  const wp=c.createLinearGradient(0,H*.73,0,H);wp.addColorStop(0,'#0a1e2e');wp.addColorStop(1,'#060f18');c.fillStyle=wp;c.fillRect(W*.27,H*.73,W*.46,H*.27);
+  // Ground
+  c.fillStyle='#142510';c.fillRect(0,H*.8,W,H*.2);c.fillStyle='#0d1c0a';c.fillRect(0,H*.78,W,H*.03);
+  const cx=W/2,bs=H*.78,s=Math.min(W,H)/580;
+  // Platform
+  c.fillStyle='#c8ba9a';c.fillRect(cx-160*s,bs-13*s,320*s,13*s);c.fillRect(cx-140*s,bs-23*s,280*s,12*s);
+  // Body
+  c.fillStyle='#e2d8bc';c.fillRect(cx-80*s,bs-115*s,160*s,94*s);
+  // Arches
+  c.fillStyle='#c0aa84';c.beginPath();c.ellipse(cx,bs-66*s,30*s,50*s,0,Math.PI,0);c.fill();
+  c.fillStyle=ni>.4?'#040a14':'#0c1c2e';c.beginPath();c.ellipse(cx,bs-68*s,22*s,43*s,0,Math.PI,0);c.fill();
+  [-50*s,50*s].forEach(ox=>{c.fillStyle='#c0aa84';c.beginPath();c.ellipse(cx+ox,bs-66*s,17*s,34*s,0,Math.PI,0);c.fill();c.fillStyle=ni>.4?'#040a14':'#0c1c2e';c.beginPath();c.ellipse(cx+ox,bs-68*s,12*s,28*s,0,Math.PI,0);c.fill()});
+  // Dome
+  c.fillStyle='#ead8c0';c.beginPath();c.ellipse(cx,bs-130*s,44*s,60*s,0,Math.PI,0);c.fill();
+  c.fillStyle='#d4a017';c.beginPath();c.moveTo(cx,bs-196*s);c.lineTo(cx-5*s,bs-190*s);c.lineTo(cx+5*s,bs-190*s);c.fill();c.beginPath();c.ellipse(cx,bs-190*s,9*s,6*s,0,0,Math.PI*2);c.fill();
+  // Minarets
+  [-132*s,132*s].forEach(ox=>{c.fillStyle='#d4caa8';c.fillRect(cx+ox-9*s,bs-135*s,18*s,120*s);c.beginPath();c.ellipse(cx+ox,bs-140*s,11*s,20*s,0,Math.PI,0);c.fillStyle='#c8bea0';c.fill()});
+  // Reflection
+  c.save();c.globalAlpha=.2;c.scale(1,-1);c.translate(0,-H*1.51);c.fillStyle='#aabcc8';c.fillRect(cx-80*s,bs-115*s,160*s,94*s);c.beginPath();c.ellipse(cx,bs-130*s,44*s,60*s,0,Math.PI,0);c.fill();c.restore();
+  // Moon
+  const mg=c.createRadialGradient(W*.76,H*.11,0,W*.76,H*.11,34);mg.addColorStop(0,'rgba(255,245,200,.95)');mg.addColorStop(1,'transparent');c.fillStyle=mg;c.beginPath();c.arc(W*.76,H*.11,34,0,Math.PI*2);c.fill();c.fillStyle='rgba(255,248,215,.95)';c.beginPath();c.arc(W*.76,H*.11,9,0,Math.PI*2);c.fill();
+  // Trees
+  [-108*s,-88*s,88*s,108*s].forEach(ox=>{c.fillStyle='#162c0e';c.beginPath();c.moveTo(cx+ox,bs-58*s);c.lineTo(cx+ox-7*s,bs);c.lineTo(cx+ox+7*s,bs);c.fill()});
+  // Aerial overlay
+  if(ai>.2){const gd=c.createRadialGradient(W/2,H/2,H*.15,W/2,H/2,W*.65);gd.addColorStop(0,'transparent');gd.addColorStop(1,'rgba(0,0,0,.5)');c.fillStyle=gd;c.fillRect(0,0,W,H);c.strokeStyle='rgba(212,160,23,.07)';c.lineWidth=1;for(let i=0;i<W;i+=60){c.beginPath();c.moveTo(i,0);c.lineTo(i,H);c.stroke()}for(let j=0;j<H;j+=60){c.beginPath();c.moveTo(0,j);c.lineTo(W,j);c.stroke()}}
+}
+
+function drawKhajuraho(cv,o={}){
+  const c=cv.getContext('2d'),W=cv.width=cv.offsetWidth||600,H=cv.height=cv.offsetHeight||320;
+  const ni=o.night||0,ai=o.aerial||0;
+  const sk=c.createLinearGradient(0,0,0,H);if(ni>.5){sk.addColorStop(0,'#030108');sk.addColorStop(1,'#0c0505')}else{sk.addColorStop(0,'#160800');sk.addColorStop(.5,'#330c06');sk.addColorStop(1,'#4e180c')}
+  c.fillStyle=sk;c.fillRect(0,0,W,H);
+  if(ni>.5)for(let i=0;i<100;i++){c.beginPath();c.arc(Math.random()*W,Math.random()*H*.5,Math.random(),0,Math.PI*2);c.fillStyle='rgba(255,255,200,.75)';c.fill()}
+  c.fillStyle='#1e1006';c.fillRect(0,H*.82,W,H*.18);
+  const cx=W/2,bs=H*.82,s=Math.min(W,H)/470;
+  function shik(x,th,bw){for(let i=0;i<9;i++){const t=i/8,sw=bw*(1-t*.65),sy=bs-th*t-th/9;const g=c.createLinearGradient(x-sw/2,0,x+sw/2,0);g.addColorStop(0,'#784618');g.addColorStop(.5,'#be742e');g.addColorStop(1,'#784618');c.fillStyle=g;c.fillRect(x-sw/2,sy,sw,th/9+1)}c.fillStyle='#d4a017';c.beginPath();c.ellipse(x,bs-th,bw*.2,bw*.09,0,0,Math.PI*2);c.fill();c.fillStyle='#ffd700';c.beginPath();c.ellipse(x,bs-th-7*s,5*s,8*s,0,0,Math.PI*2);c.fill()}
+  shik(cx,180*s,96*s);shik(cx-150*s,120*s,64*s);shik(cx+150*s,120*s,64*s);
+  c.fillStyle='#9e5826';c.fillRect(cx-63*s,bs-80*s,126*s,80*s);c.fillStyle='#be6830';c.fillRect(cx-102*s,bs-50*s,204*s,50*s);
+  c.fillStyle='#d4a017';c.fillRect(cx-63*s,bs-89*s,126*s,7*s);for(let i=0;i<9;i++){c.fillStyle=i%2?'#be6c2c':'#de7e3e';c.fillRect(cx-58*s+i*14*s,bs-84*s,10*s,5*s)}
+  c.fillStyle='#783a0e';c.beginPath();c.ellipse(cx,bs-24*s,18*s,24*s,0,Math.PI,0);c.fill();
+  if(ni>.3){c.fillStyle=`rgba(3,0,12,${ni*.5})`;c.fillRect(0,0,W,H);const mg=c.createRadialGradient(W*.78,H*.14,0,W*.78,H*.14,28);mg.addColorStop(0,'rgba(255,245,200,.8)');mg.addColorStop(1,'transparent');c.fillStyle=mg;c.fillRect(0,0,W,H)}
+  if(ai>.2){const gd=c.createRadialGradient(W/2,H/2,H*.15,W/2,H/2,W*.65);gd.addColorStop(0,'transparent');gd.addColorStop(1,'rgba(0,0,0,.5)');c.fillStyle=gd;c.fillRect(0,0,W,H)}
+}
+
+function drawHampi(cv,o={}){
+  const c=cv.getContext('2d'),W=cv.width=cv.offsetWidth||600,H=cv.height=cv.offsetHeight||320;
+  const ni=o.night||0,ai=o.aerial||0;
+  const sk=c.createLinearGradient(0,0,0,H);if(ni>.5){sk.addColorStop(0,'#010408');sk.addColorStop(1,'#06080e')}else{sk.addColorStop(0,'#080e18');sk.addColorStop(.6,'#16202c');sk.addColorStop(1,'#241405')}
+  c.fillStyle=sk;c.fillRect(0,0,W,H);
+  if(ni>.5)for(let i=0;i<110;i++){c.beginPath();c.arc(Math.random()*W,Math.random()*H*.5,Math.random()*.9,0,Math.PI*2);c.fillStyle='rgba(255,255,200,.8)';c.fill()}
+  const bxs=[.07,.21,.38,.56,.70,.87],bss=[[62,52],[88,68],[73,58],[78,62],[58,48],[68,56]];
+  bxs.forEach((bx,i)=>{c.fillStyle=`hsl(28,${30+i*2}%,${13+i}%)`;c.beginPath();c.ellipse(W*bx,H*(.5+Math.sin(i)*.06),bss[i][0],bss[i][1],Math.sin(i)*.3,0,Math.PI*2);c.fill()});
+  const bs=H*.82,cx=W/2,s=Math.min(W,H)/470;
+  c.fillStyle='#583415';c.fillRect(cx-50*s,bs-160*s,100*s,160*s);
+  for(let i=0;i<6;i++){const t=i/5;c.fillStyle=`hsl(28,${46-t*17}%,${23+t*10}%)`;c.fillRect(cx-(50-i*7)*s,bs-(160+i*27)*s,(100-i*14)*s,27*s)}
+  c.fillStyle='#886018';c.beginPath();c.ellipse(cx,bs-326*s,17*s,12*s,0,0,Math.PI*2);c.fill();
+  [-100*s,-80*s,80*s,100*s].forEach(ox=>{c.fillStyle='#684222';c.fillRect(cx+ox-5*s,bs-80*s,10*s,80*s);c.fillRect(cx+ox-12*s,bs-82*s,24*s,8*s)});
+  const rv=c.createLinearGradient(0,H*.86,0,H);rv.addColorStop(0,'#081828');rv.addColorStop(1,'#040c16');c.fillStyle=rv;c.fillRect(0,H*.86,W,H*.14);
+  if(!ni)for(let i=0;i<50;i++){c.beginPath();c.arc(Math.random()*W,Math.random()*H*.48,Math.random()*.85,0,Math.PI*2);c.fillStyle='rgba(255,255,200,.65)';c.fill()}
+  if(ai>.2){const gd=c.createRadialGradient(W/2,H/2,H*.15,W/2,H/2,W*.65);gd.addColorStop(0,'transparent');gd.addColorStop(1,'rgba(0,0,0,.5)');c.fillStyle=gd;c.fillRect(0,0,W,H)}
+}
+
+function drawAjanta(cv,o={}){
+  const c=cv.getContext('2d'),W=cv.width=cv.offsetWidth||600,H=cv.height=cv.offsetHeight||320;
+  const ni=o.night||0;
+  const bg=c.createRadialGradient(W/2,H*.55,0,W/2,H/2,W*.72);bg.addColorStop(0,'#381606');bg.addColorStop(.5,'#180a02');bg.addColorStop(1,'#060200');c.fillStyle=bg;c.fillRect(0,0,W,H);
+  c.fillStyle='#240c04';c.beginPath();c.ellipse(W/2,H*.56,W*.4,H*.54,0,Math.PI,0,true);c.fill();
+  const cols=['#882e0e','#d06808','#9e4c14','#662402','#c48406'];
+  for(let r=0;r<3;r++)for(let col=0;col<5;col++){c.fillStyle=cols[(r+col)%5];c.fillRect(16+col*(W*.185),H*.13+r*50,W*.15,37);c.fillStyle='rgba(255,190,110,.52)';c.beginPath();c.arc(16+col*(W*.185)+W*.075,H*.13+r*50+15,6.5,0,Math.PI*2);c.fill()}
+  [-W*.3,-W*.14,W*.14,W*.3].forEach(ox=>{const g=c.createLinearGradient(W/2+ox-12,0,W/2+ox+12,0);g.addColorStop(0,'#682c0c');g.addColorStop(.5,'#9e4c1c');g.addColorStop(1,'#682c0c');c.fillStyle=g;c.fillRect(W/2+ox-12,H*.07,24,H*.93);c.fillStyle='#bc5a1c';c.fillRect(W/2+ox-18,H*.07,36,16)});
+  const tg=c.createRadialGradient(W/2,H*.38,0,W/2,H*.38,125);tg.addColorStop(0,'rgba(255,150,36,.26)');tg.addColorStop(1,'transparent');c.fillStyle=tg;c.fillRect(0,0,W,H);
+  c.fillStyle='rgba(196,122,36,.26)';c.beginPath();c.ellipse(W/2,H*.4,20,25,0,0,Math.PI*2);c.fill();c.fillRect(W/2-18,H*.45,36,40);
+  if(ni>.2){c.fillStyle=`rgba(2,0,8,${ni*.45})`;c.fillRect(0,0,W,H)}
+}
+
+// ── THUMBNAIL DRAW ──
+function drawAllThumbs(){
+  Object.values(MONS).forEach(m=>{
+    const id=m.id==='khajuraho'?'c-khaj':'c-'+m.id;
+    const el=document.getElementById(id);if(el)m.draw(el);
+  });
+}
+window.addEventListener('resize',()=>{drawAllThumbs();if(curMon)resizeTourCanvas()});
+
+// ══════════════════════════════════════════════════════
+//  BUILD MONUMENT CARDS
+// ══════════════════════════════════════════════════════
+function buildCards(){
+  const grid=document.getElementById('monGrid');
+  const order=['taj','khajuraho','hampi','ajanta'];
+  order.forEach((key,i)=>{
+    const m=MONS[key];
+    const div=document.createElement('div');
+    div.className='mcard'+(m.feat?' m-feat':'');
+    const cid=key==='khajuraho'?'c-khaj':'c-'+key;
+    div.innerHTML=`
+      <div class="mcard-vis">
+        <canvas id="${cid}" style="cursor:crosshair"></canvas>
+        <div class="vr-tag">● ${m.badge}</div>
+      </div>
+      <div class="mcard-body">
+        <div class="m-era">${m.era}</div>
+        <div class="m-name">${m.name}</div>
+        <div class="m-loc">📍 ${m.loc}</div>
+        <div class="m-desc">${m.desc}</div>
+        <div class="m-tags">${m.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <div class="m-foot">
+          <button class="btn-sm" onclick="event.stopPropagation();openTour('${key}')">🥽 Enter Tour →</button>
+          <div class="m-rating">★${m.rating} <span style="color:var(--mu);margin-left:2px">(${m.rev.toLocaleString()})</span></div>
+        </div>
+      </div>`;
+    div.addEventListener('click',()=>openTour(key));
+    grid.appendChild(div);
+  });
+  setTimeout(()=>{
+    drawAllThumbs();
+    // Thumb click = show nearest hotspot tooltip (brief)
+    Object.values(MONS).forEach(m=>{
+      const cid=m.id==='khajuraho'?'c-khaj':'c-'+m.id;
+      const el=document.getElementById(cid);
+      if(!el)return;
+      el.addEventListener('click',ev=>{ev.stopPropagation();openTour(m.id)});
+    });
+  },180);
+}
+
+// ══════════════════════════════════════════════════════
+//  TOUR MODAL
+// ══════════════════════════════════════════════════════
+let curMon=null,curView='walk',animF=null,walkT=0;
+
+function openTour(key){
+  const m=MONS[key];if(!m)return;
+  curMon=m;curView='walk';walkT=0;
+  document.getElementById('modalTitle').textContent=m.name;
+  document.getElementById('infoPeriod').textContent=m.period;
+  document.getElementById('infoLoc').textContent=m.loc;
+  document.getElementById('infoStyle').textContent=m.style;
+  document.getElementById('tourStory').textContent=m.story;
+  // Reset view buttons
+  document.querySelectorAll('.vbtn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.vbtn').classList.add('active');
+  applyViewLabel('walk');
+  buildHsList(m);
+  document.getElementById('hsDetail').classList.remove('show');
+  document.getElementById('hsTip').classList.remove('show');
+  document.getElementById('tourModal').classList.add('open');
+  document.body.style.overflow='hidden';
+  requestAnimationFrame(()=>{resizeTourCanvas();startAnim()});
+}
+function closeTour(){
+  document.getElementById('tourModal').classList.remove('open');
+  document.body.style.overflow='';
+  cancelAnimationFrame(animF);
+}
+function resizeTourCanvas(){
+  const vp=document.getElementById('viewport');
+  const cv=document.getElementById('tour-canvas');
+  cv.width=vp.offsetWidth||800;cv.height=vp.offsetHeight||450;
+}
+function applyViewLabel(v){
+  const info=VIEWS_INFO[v];
+  document.getElementById('vlTitle').textContent=info.title;
+  document.getElementById('vlDesc').textContent=info.desc;
+  document.getElementById('walkBar').style.display=info.showBar?'block':'none';
+}
+function setView(btn,view){
+  curView=view;walkT=0;
+  document.querySelectorAll('.vbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyViewLabel(view);
+  document.getElementById('hsTip').classList.remove('show');
+  toast(VIEWS_INFO[view].title+' activated','inf',1400);
+}
+
+// ── ANIMATION LOOP ──
+function startAnim(){
+  cancelAnimationFrame(animF);
+  const cv=document.getElementById('tour-canvas');
+  let t=0;
+  function frame(){
+    t+=.016;walkT=t;
+    const ctx=cv.getContext('2d');
+    const opts={night:curView==='night'?Math.min(1,t*.5):0,aerial:curView==='aerial'?Math.min(1,t*.3):0};
+    curMon.draw(cv,opts);
+    drawViewOverlay(ctx,cv,t);
+    drawHotspotPins(ctx,cv,t);
+    // Walk progress bar
+    if(curView==='walk'||curView==='aerial'){
+      const pts=curView==='aerial'?FLY_PTS:WALK_PTS;
+      const pct=((t%30)/30)*100;
+      const idx=Math.min(Math.floor((pct/100)*pts.length),pts.length-1);
+      document.getElementById('walkFill').style.width=pct+'%';
+      document.getElementById('walkPos').textContent=pts[idx];
+    }
+    animF=requestAnimationFrame(frame);
+  }
+  frame();
+  // Canvas click → nearest hotspot
+  cv.onclick=function(e){
+    const r=cv.getBoundingClientRect();
+    const mx=(e.clientX-r.left)/r.width;
+    const my=(e.clientY-r.top)/r.height;
+    let best=null,bestD=99;
+    Object.values(curMon.hs).forEach(h=>{const d=Math.hypot(mx-h.cx,my-h.cy);if(d<bestD){bestD=d;best=h}});
+    if(best&&bestD<.19){
+      const tip=document.getElementById('hsTip');
+      const px=best.cx*r.width,py=best.cy*r.height;
+      tip.style.left=Math.min(px,r.width-270)+'px';
+      tip.style.top=Math.max(py-130,8)+'px';
+      document.getElementById('hsTipTitle').textContent=best.i+' '+best.t;
+      document.getElementById('hsTipText').textContent=best.p;
+      tip.classList.add('show');
+      document.querySelectorAll('.hs-btn').forEach(b=>b.classList.remove('on'));
+      document.querySelectorAll('.hs-btn').forEach(b=>{if(b.dataset.key===best.t)b.classList.add('on')});
+      showHsDetail(best.t,best.p);
+      toast('📍 '+best.t,'inf',1200);
+    }else{document.getElementById('hsTip').classList.remove('show')}
+  };
+}
+
+function drawViewOverlay(ctx,cv,t){
+  const W=cv.width,H=cv.height;
+  if(curView==='aerial'){
+    const g=ctx.createRadialGradient(W/2,H/2,H*.2,W/2,H/2,W*.68);g.addColorStop(0,'transparent');g.addColorStop(1,'rgba(0,0,0,.52)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(212,160,23,.07)';ctx.lineWidth=1;
+    for(let x=0;x<W;x+=56){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+    for(let y=0;y<H;y+=56){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+    ctx.fillStyle='rgba(212,160,23,.65)';ctx.font=`bold ${Math.max(9,W*.013)}px Jost,sans-serif`;
+    ctx.fillText('ALT: 200m',W-72,H-12);ctx.fillText('AERIAL VIEW ↓',10,H-12);
+  }
+  if(curView==='ar'){
+    const hs=Object.values(curMon.hs);
+    hs.forEach(h=>{
+      const px=h.cx*W,py=h.cy*H;
+      ctx.strokeStyle='rgba(20,189,172,.55)';ctx.lineWidth=1.5;ctx.beginPath();ctx.rect(px-36,py-22,72,44);ctx.stroke();
+      // Animated scan line
+      const sl=py-22+((t*28)%44);
+      ctx.strokeStyle='rgba(20,189,172,.35)';ctx.beginPath();ctx.moveTo(px-36,sl);ctx.lineTo(px+36,sl);ctx.stroke();
+      ctx.fillStyle='rgba(20,189,172,.8)';ctx.font=`${Math.max(8,W*.011)}px Jost,sans-serif`;ctx.fillText('SCAN',px-12,py-25);
+    });
+    ctx.fillStyle='rgba(20,189,172,.5)';ctx.font=`bold ${Math.max(9,W*.013)}px Jost,sans-serif`;ctx.fillText('AR OVERLAY ACTIVE',10,H-12);
+  }
+  if(curView==='story'){
+    const vg=ctx.createRadialGradient(W/2,H/2,H*.28,W/2,H/2,W*.62);vg.addColorStop(0,'transparent');vg.addColorStop(1,'rgba(55,18,4,.52)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+    const pulse=.5+.5*Math.sin(t*1.4);
+    ctx.fillStyle=`rgba(212,160,23,${pulse*.14})`;ctx.fillRect(0,H-36,W,36);
+    ctx.fillStyle=`rgba(250,243,224,${.55+pulse*.3})`;ctx.font=`${Math.max(10,W*.016)}px Cormorant Garamond,serif`;
+    ctx.fillText('📜 '+curMon.name+' — AI Narration Active',12,H-12);
+  }
+  if(curView==='walk'){
+    const bob=Math.sin(t*3.4)*2;
+    ctx.fillStyle=`rgba(0,0,0,${Math.abs(bob)*.025})`;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,107,26,.22)';ctx.font=`${Math.max(9,W*.012)}px Jost,sans-serif`;ctx.fillText('WALK MODE · Click glowing pins to explore hotspots',10,H-12);
+  }
+  if(curView==='night'){
+    ctx.fillStyle='rgba(255,107,26,.2)';ctx.font=`${Math.max(9,W*.012)}px Jost,sans-serif`;ctx.fillText('🌙 NIGHT MODE · Moonlit Heritage Tour',10,H-12);
+  }
+  // Saffron shimmer (all modes)
+  ctx.fillStyle=`rgba(255,107,26,${.018+Math.abs(Math.sin(t*.4))*.012})`;ctx.fillRect(0,0,W,H);
+}
+
+function drawHotspotPins(ctx,cv,t){
+  const W=cv.width,H=cv.height;
+  Object.values(curMon.hs).forEach((h,i)=>{
+    const px=h.cx*W,py=h.cy*H;
+    const pulse=.5+.5*Math.sin(t*2.2+i);
+    ctx.beginPath();ctx.arc(px,py,13+pulse*4,0,Math.PI*2);ctx.strokeStyle=`rgba(212,160,23,${.28+pulse*.28})`;ctx.lineWidth=1.5;ctx.stroke();
+    ctx.beginPath();ctx.arc(px,py,8,0,Math.PI*2);ctx.fillStyle=`rgba(212,160,23,${.72+pulse*.28})`;ctx.fill();
+    ctx.font='10px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(h.i,px,py);
+    ctx.textAlign='left';ctx.textBaseline='alphabetic';
+  });
+}
+
+function buildHsList(m){
+  const list=document.getElementById('hsList');
+  list.innerHTML=Object.entries(m.hs).map(([k,h])=>`<button class="hs-btn" data-key="${h.t}" onclick="clickHs(this,'${encodeURIComponent(k)}')"><span>${h.i}</span>${h.t}</button>`).join('');
+}
+function clickHs(btn,encKey){
+  const k=decodeURIComponent(encKey),h=curMon.hs[k];if(!h)return;
+  document.querySelectorAll('.hs-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');showHsDetail(h.t,h.p);toast('📍 '+h.t,'inf',1200);
+}
+function showHsDetail(t,p){
+  document.getElementById('hsTitle').textContent=t;
+  document.getElementById('hsText').textContent=p;
+  const d=document.getElementById('hsDetail');d.classList.add('show');
+  d.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ══════════════════════════════════════════════════════
+//  VR
+// ══════════════════════════════════════════════════════
+function openVR(){document.getElementById('vrModal').classList.add('open');document.body.style.overflow='hidden'}
+function closeVR(){document.getElementById('vrModal').classList.remove('open');document.body.style.overflow=''}
+function pickVR(el){document.querySelectorAll('.vr-opt').forEach(v=>v.classList.remove('picked'));el.classList.add('picked')}
+function launchVR(){
+  const sel=document.querySelector('.vr-opt.picked .vn').textContent;
+  closeVR();toast('🥽 Launching '+sel+'…','ok',3000);
+  setTimeout(()=>{goPage('tour');openTour('taj')},700);
+}
+
+// ══════════════════════════════════════════════════════
+//  INDIA360 — QUIZ
+// ══════════════════════════════════════════════════════
+const QS=[
+  {q:'Which emperor commissioned the Taj Mahal and in which year?',o:['Akbar, 1556','Shah Jahan, 1632','Aurangzeb, 1658','Humayun, 1540'],a:1,e:'Shah Jahan began construction in 1632 as a mausoleum for Mumtaz Mahal who died in 1631.'},
+  {q:'The Khajuraho temples were built by which Rajput dynasty?',o:['Paramara','Chandela','Solanki','Chahamana'],a:1,e:'The Chandela dynasty built the Khajuraho temples between 950–1050 CE in Madhya Pradesh.'},
+  {q:"Hampi was sacked after which 1565 battle?",o:['Battle of Panipat','Battle of Haldighati','Battle of Talikota','Battle of Plassey'],a:2,e:'The Battle of Talikota ended the Vijayanagara Empire when a coalition of Deccan Sultanates sacked the city.'},
+  {q:'The Ajanta Caves were rediscovered in which year?',o:['1756','1819','1902','1947'],a:1,e:'John Smith rediscovered the Ajanta Caves in 1819 while on a tiger hunt — they had been hidden by jungle for 1,300 years.'},
+  {q:'Which architectural style characterises the Khajuraho temples?',o:['Dravidian','Vesara','Nagara','Kalinga'],a:2,e:'Khajuraho temples are built in the Nagara style — characterised by a beehive-shaped shikhara tower over the main shrine.'},
+  {q:'How many types of precious stones are inlaid in the Taj Mahal?',o:['12','18','28','42'],a:2,e:'28 types of precious and semi-precious stones from across Asia were used in the Taj Mahal\'s pietra dura inlay.'},
+  {q:'At its peak, Hampi was the second-largest city after which city?',o:['Rome','Constantinople','Beijing','Cairo'],a:2,e:'At its 16th-century peak, Hampi was second only to Beijing in city size, with over 500,000 inhabitants.'},
+  {q:'The Charbagh garden of the Taj Mahal is divided into how many quadrants?',o:['2','4','8','12'],a:1,e:'Charbagh means "four gardens" — divided into four quadrants by raised marble waterways symbolising paradise.'}
+];
+let qi=0,qScore=0,qAnswered=false,myTotal=0;
+
+function showQuiz(){
+  document.getElementById('quizPanel').style.display='block';
+  document.getElementById('arPanel').style.display='none';
+  document.getElementById('mapPanel').style.display='none';
+  document.getElementById('docPanel').style.display='none';
+  qi=0;qScore=0;qAnswered=false;renderQ();
+  document.getElementById('quizPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function renderQ(){
+  if(qi>=QS.length){
+    myTotal+=qScore;document.getElementById('mySc').textContent=myTotal;
+    document.getElementById('quizContent').innerHTML=`<div style="text-align:center;padding:20px 0">
+      <div style="font-size:48px;margin-bottom:14px">${qScore>=6?'🏆':qScore>=4?'🌟':'📚'}</div>
+      <div style="font-family:'Yatra One',cursive;font-size:clamp(20px,4vw,26px);color:var(--ivy);margin-bottom:10px">Quiz Complete!</div>
+      <p style="color:var(--mu);margin-bottom:20px">You scored <span style="font-family:'Yatra One',cursive;font-size:28px;color:var(--gld2)">${qScore}/${QS.length}</span></p>
+      <button class="btn-pri" onclick="qi=0;qScore=0;renderQ()">🔄 Try Again</button>
+    </div>`;return;
+  }
+  qAnswered=false;const q=QS[qi];
+  document.getElementById('quizContent').innerHTML=`
+    <div class="quiz-bar" style="margin-bottom:16px">
+      <span class="quiz-prog-lbl">Question ${qi+1} of ${QS.length}</span>
+      <span class="quiz-score">Score: ${qScore}</span>
+    </div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.o.map((o,i)=>`<button class="qopt" onclick="ansQ(this,${i})">${o}</button>`).join('')}</div>
+    <div class="quiz-fb" id="qfb"></div>
+    <div style="text-align:right">
+      <button class="btn-pri" id="qnxt" style="display:none;padding:10px 20px;font-size:13px" onclick="qi++;renderQ()">${qi<QS.length-1?'Next →':'See Results'}</button>
+    </div>`;
+}
+function ansQ(btn,i){
+  if(qAnswered)return;qAnswered=true;
+  const q=QS[qi];
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.qopt')[q.a].classList.add('correct');
+  if(i===q.a){qScore++;toast('✅ Correct! +100 pts','ok',1500)}else{btn.classList.add('wrong');toast('❌ Incorrect','err',1500)}
+  document.getElementById('qfb').textContent=q.e;
+  document.getElementById('qnxt').style.display='inline-flex';
+}
+
+// ── AR EXPLORER ──
+let arAnimF=null;
+function showAR(){
+  document.getElementById('quizPanel').style.display='none';
+  document.getElementById('arPanel').style.display='block';
+  document.getElementById('mapPanel').style.display='none';
+  document.getElementById('docPanel').style.display='none';
+  document.getElementById('arPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+  startARCanvas();
+}
+let selARItem={name:'Taj Mahal Miniature',era:'Mughal · 1650 CE',desc:'Marble inlay miniature depicting the Taj Mahal. The pietra dura technique involves cutting and fitting semi-precious stones into marble recesses.'};
+function selectAR(el,name,era,desc){
+  document.querySelectorAll('.ar-obj').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');selARItem={name,era,desc};toast('🔍 Scanning '+name+'…','inf',1500);
+}
+function startARCanvas(){
+  cancelAnimationFrame(arAnimF);
+  const cv=document.getElementById('ar-canvas');cv.width=cv.offsetWidth||600;
+  let t=0;
+  function frame(){t+=.02;
+    const c=cv.getContext('2d'),W=cv.width,H=cv.height;
+    c.fillStyle='#050208';c.fillRect(0,0,W,H);
+    // Scan grid
+    c.strokeStyle='rgba(20,189,172,.15)';c.lineWidth=1;
+    for(let x=0;x<W;x+=40){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
+    for(let y=0;y<H;y+=40){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+    // Artifact box
+    const bx=W/2-100,by=H/2-60,bw=200,bh=120;
+    c.strokeStyle=`rgba(20,189,172,${.5+.3*Math.sin(t*3)})`;c.lineWidth=2;c.beginPath();c.rect(bx,by,bw,bh);c.stroke();
+    // Corner ticks
+    const ck=16;[[bx,by],[bx+bw,by],[bx,by+bh],[bx+bw,by+bh]].forEach(([px,py])=>{
+      c.strokeStyle='rgba(212,160,23,.9)';c.lineWidth=2.5;
+      c.beginPath();c.moveTo(px+(px<W/2?0:0),py);c.lineTo(px+(px<W/2?ck:-ck),py);c.stroke();
+      c.beginPath();c.moveTo(px,py);c.lineTo(px,py+(py<H/2?ck:-ck));c.stroke();
+    });
+    // Scan line
+    const sl=by+((t*60)%bh);c.strokeStyle='rgba(20,189,172,.4)';c.lineWidth=1.5;c.beginPath();c.moveTo(bx,sl);c.lineTo(bx+bw,sl);c.stroke();
+    // Icon
+    c.font=`${Math.min(40,bh*.55)}px sans-serif`;c.textAlign='center';c.textBaseline='middle';c.fillText('🔍',W/2,H/2);
+    c.textAlign='left';c.textBaseline='alphabetic';
+    // Info panel
+    c.fillStyle='rgba(10,6,2,.88)';c.fillRect(0,0,W,44);
+    c.fillStyle='rgba(20,189,172,.9)';c.font=`bold ${Math.max(11,W*.02)}px Jost,sans-serif`;c.fillText('AR SCAN: '+selARItem.name,10,16);
+    c.fillStyle='rgba(212,160,23,.8)';c.font=`${Math.max(9,W*.016)}px Jost,sans-serif`;c.fillText(selARItem.era,10,32);
+    // Desc bar
+    c.fillStyle='rgba(10,6,2,.88)';c.fillRect(0,H-48,W,48);
+    c.fillStyle='rgba(250,243,224,.7)';c.font=`${Math.max(9,W*.016)}px Jost,sans-serif`;
+    const words=selARItem.desc.split(' ');let line='',y2=H-32;
+    words.forEach(w=>{const test=line+w+' ';if(c.measureText(test).width>W-20&&line){c.fillText(line,10,y2);line=w+' ';y2+=14}else line=test});
+    c.fillText(line,10,y2);
+    arAnimF=requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+// ── MAP ──
+const MAP_SITES=[
+  {name:'Taj Mahal',x:.55,y:.38,type:'UNESCO',info:'1632–1653 CE. Mughal marvel in white marble. Built by Shah Jahan. UNESCO World Heritage Site.'},
+  {name:'Khajuraho',x:.52,y:.42,type:'UNESCO',info:'950–1050 CE. Chandela temples with exquisite Nagara-style sculpture. UNESCO World Heritage.'},
+  {name:'Hampi',x:.46,y:.58,type:'UNESCO',info:'14th–16th CE. Vijayanagara Empire capital. 1,600 surviving monuments.'},
+  {name:'Ajanta Caves',x:.45,y:.50,type:'UNESCO',info:'200 BCE–480 CE. Rock-cut Buddhist caves with the finest surviving ancient Indian paintings.'},
+  {name:'Qutub Minar',x:.50,y:.35,type:'National',info:'1193 CE. The world\'s tallest brick minaret at 73m. UNESCO World Heritage Site, Delhi.'},
+  {name:'Konark Sun Temple',x:.60,y:.48,type:'UNESCO',info:'1250 CE. Magnificent 13th-century temple designed as the chariot of the Sun God. Odisha.'},
+  {name:'Mysore Palace',x:.47,y:.62,type:'State',info:'1912 CE. One of India\'s most visited monuments — the seat of the Wadiyar dynasty of Mysore.'},
+  {name:'Red Fort',x:.50,y:.34,type:'UNESCO',info:'1638 CE. Mughal emperor Shah Jahan\'s principal residence in Delhi. UNESCO World Heritage.'},
+  {name:'Ellora Caves',x:.45,y:.51,type:'UNESCO',info:'600–1000 CE. 34 rock-cut temples of Buddhist, Hindu, and Jain traditions. Maharashtra.'},
+  {name:'Mahabalipuram',x:.50,y:.65,type:'UNESCO',info:'7th–8th CE. Pallava Dynasty shore temples and bas-relief carvings. Tamil Nadu coast.'},
+];
+let mapAnimF=null;
+function showMap(){
+  document.getElementById('quizPanel').style.display='none';
+  document.getElementById('arPanel').style.display='none';
+  document.getElementById('mapPanel').style.display='block';
+  document.getElementById('docPanel').style.display='none';
+  document.getElementById('mapPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+  document.getElementById('map-info').style.display='none';
+  startMapCanvas();
+}
+function startMapCanvas(){
+  cancelAnimationFrame(mapAnimF);
+  const cv=document.getElementById('map-canvas');cv.width=cv.offsetWidth||600;
+  let t=0;
+  function frame(){t+=.02;
+    const c=cv.getContext('2d'),W=cv.width,H=cv.height;
+    c.fillStyle='#0a0a14';c.fillRect(0,0,W,H);
+    // India shape (simplified polygon)
+    c.beginPath();
+    const pts=[[.38,.08],[.52,.06],[.62,.10],[.68,.18],[.70,.28],[.72,.36],[.68,.44],[.72,.52],[.68,.58],[.62,.65],[.56,.70],[.50,.78],[.46,.72],[.40,.65],[.35,.58],[.30,.50],[.28,.40],[.30,.30],[.34,.20],[.38,.12]];
+    c.moveTo(pts[0][0]*W,pts[0][1]*H);pts.forEach(p=>c.lineTo(p[0]*W,p[1]*H));c.closePath();
+    c.fillStyle='rgba(58,40,10,.7)';c.fill();c.strokeStyle='rgba(212,160,23,.3)';c.lineWidth=1.5;c.stroke();
+    // Sites
+    MAP_SITES.forEach((s,i)=>{
+      const px=s.x*W,py=s.y*H,pulse=.5+.5*Math.sin(t*2+i*.8);
+      const col=s.type==='UNESCO'?'#FF6B1A':s.type==='State'?'#14BDAC':'#F2C94C';
+      c.beginPath();c.arc(px,py,8+pulse*3,0,Math.PI*2);c.strokeStyle=col.replace(')',`,${.25+pulse*.2})`).replace('rgb','rgba').replace('#','');
+      // Simple glow
+      c.strokeStyle=col+'44';c.lineWidth=1;c.stroke();
+      c.beginPath();c.arc(px,py,5,0,Math.PI*2);c.fillStyle=col;c.fill();
+      // Label
+      c.fillStyle='rgba(250,243,224,.75)';c.font=`${Math.max(8,W*.013)}px Jost,sans-serif`;c.fillText(s.name,px+7,py+4);
+    });
+    mapAnimF=requestAnimationFrame(frame);
+  }
+  frame();
+  // Click
+  document.getElementById('map-canvas').onclick=function(e){
+    const r=this.getBoundingClientRect();
+    const mx=(e.clientX-r.left)/r.width,my=(e.clientY-r.top)/r.height;
+    let best=null,bestD=99;
+    MAP_SITES.forEach(s=>{const d=Math.hypot(mx-s.x,my-s.y);if(d<bestD){bestD=d;best=s}});
+    if(best&&bestD<.06){
+      document.getElementById('map-site-name').textContent=best.name;
+      document.getElementById('map-site-info').textContent=best.info;
+      document.getElementById('map-info').style.display='block';
+      toast('📍 '+best.name,'inf',1200);
+    }
+  };
+}
+
+// ── DOCUMENTARY ──
+function showDocumentary(){
+  document.getElementById('quizPanel').style.display='none';
+  document.getElementById('arPanel').style.display='none';
+  document.getElementById('mapPanel').style.display='none';
+  document.getElementById('docPanel').style.display='block';
+  document.getElementById('docPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function selectDoc(el,title,dur,desc){
+  document.querySelectorAll('.ar-obj').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('doc-title').textContent=title;
+  document.getElementById('doc-dur').textContent=dur;
+  document.getElementById('doc-desc').textContent=desc;
+}
+
+// ══════════════════════════════════════════════════════
+//  AVATARS
+// ══════════════════════════════════════════════════════
+function pickAv(el,name,story){
+  document.querySelectorAll('.av-item').forEach(a=>a.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('avName').textContent=name;
+  document.getElementById('avStory').textContent=story;
+}
+function confirmAv(){
+  const n=document.getElementById('avName').textContent;
+  toast('✨ Avatar "'+n.replace(/^[^ ]+ /,'')+'" selected!','ok',3000);
+}
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+buildCards();
+setTimeout(drawAllThumbs,250);
+// Set first nav link active
+document.querySelector('.nav-links a').classList.add('active');
+</script>
+</body>
+</html>
