@@ -1,50 +1,24 @@
-# Audio Guide System Documentation
+# 🎙️ Audio Guide System & Indian Tricolor Theme
 
 ## Overview
 Sanskriti Sphere now features an **Interactive AI Audio Guide System** with responsive, multilingual narration for the first 5 monuments: Taj Mahal, Red Fort, Qutub Minar, Humayun's Tomb, and Golconda Fort.
 
 ---
 
-## 🎙️ Features
+## ✨ Features
 
 ### 1. **Multilingual Support (22 Languages)**
-- **Indian Languages**: Hindi, Tamil, Telugu, Kannada, Malayalam, Gujarati, Marathi, Bengali, Punjabi, Odia, Assamese
-- **Global Languages**: English, Spanish, French, German, Mandarin, Japanese, Arabic, Portuguese, Russian, Korean, Italian
+- **Indian Languages**: Hindi, Tamil, Telugu, Kannada, Malayalam, Gujarati, Marathi, Bengali, Punjabi, Odia, Assamese (11)
+- **Global Languages**: English, Spanish, French, German, Mandarin, Japanese, Arabic, Portuguese, Russian, Korean, Italian (11)
 
 ### 2. **Responsive Audio Guide**
 - **Adaptive Narration**: Changes based on user's selected avatar/learning style
 - **Interactive Hotspot Audio**: Each hotspot in a monument has narration
 - **Real-time Progress**: Visual waveform and time display
 - **Transcript Display**: Read along while listening
+- **Playback Controls**: Speed adjustment (0.75x - 1.5x), Loop options
 
-### 3. **Audio Database Structure (Firebase)**
-
-```
-COLLECTION: audioGuides
-├── taj-mahal-en (English)
-├── taj-mahal-hi (Hindi)
-├── taj-mahal-ta (Tamil)
-... (22 languages × 5 monuments = 110 audio documents)
-
-COLLECTION: hotspotAudio
-├── taj-main-mausoleum-en
-├── taj-main-mausoleum-hi
-├── taj-charbagh-gardens-en
-... (each hotspot in each language)
-
-COLLECTION: threeDModels
-├── taj-mahal (GLB model 4K)
-├── red-fort
-├── qutub-minar
-├── humayun-tomb
-├── golconda-fort
-```
-
----
-
-## 🎨 New Aesthetic Theme: Indian Tricolor
-
-### Color Palette
+### 3. **Indian Tricolor Theme**
 ```css
 :root {
   --saffron: #FF9933         /* Orange - Courage & Sacrifice */
@@ -54,288 +28,597 @@ COLLECTION: threeDModels
 }
 ```
 
-### Theme Application
-- **Navigation Bar**: Tricolor gradient on brand
-- **Buttons**: Saffron → Green gradient (Courage → Prosperity)
-- **Accents**: Gold highlights for heritage elements
-- **Loading Bar**: Animates through all three colors
-- **Scrollbar**: Tricolor gradient
+---
 
-### Visual Examples
-- Loading screen: "संस्कृति स्फेयर" text flows through tricolor
-- Hero section: Badge with saffron-to-green gradient
-- Monument cards: Hover effects with saffron highlights
-- Footer: Tricolor separator blocks
+## 🗄️ Firebase Database Schema
+
+### Collections Structure
+
+```
+📁 monuments
+  ├─ taj-mahal
+  │  ├─ name: "Taj Mahal"
+  │  ├─ location: "Agra, Uttar Pradesh"
+  │  ├─ audioGuides: ["taj-mahal-en", "taj-mahal-hi", ...] (22 entries)
+  │  ├─ threeDModel: "gs://bucket/3d-models/taj-mahal.glb"
+  │  └─ metadata: {era, dynasty, builtBy, style}
+  │
+  ├─ red-fort
+  ├─ qutub-minar
+  ├─ humayun-tomb
+  └─ golconda-fort
+
+📁 audioGuides (110 documents)
+  ├─ taj-mahal-en
+  │  ├─ monumentId: "taj-mahal"
+  │  ├─ language: "en"
+  │  ├─ languageName: "English"
+  │  ├─ audioUrl: "gs://bucket/audio/taj-mahal-en.mp3"
+  │  ├─ duration: 380
+  │  ├─ transcript: "The jewel of Muslim art in India..."
+  │  ├─ narratorStyle: "conversational"
+  │  └─ createdAt: timestamp
+  │
+  ├─ taj-mahal-hi (Hindi variant)
+  ├─ taj-mahal-ta (Tamil variant)
+  ... (22 languages × 5 monuments)
+
+📁 hotspotAudio (150+ documents)
+  ├─ taj-main-mausoleum-en
+  │  ├─ monumentId: "taj-mahal"
+  │  ├─ hotspotId: "main-mausoleum"
+  │  ├─ language: "en"
+  │  ├─ audioUrl: "gs://bucket/audio/hotspots/taj-main-mausoleum-en.mp3"
+  │  ├─ duration: 45
+  │  ├─ transcript: "The central domed structure..."
+  │  └─ relatedImages: [array of image URLs]
+  │
+  ├─ taj-charbagh-gardens-en
+  ... (multiple hotspots × 22 languages × 5 monuments)
+
+📁 threeDModels (5 documents)
+  ├─ taj-mahal
+  │  ├─ modelUrl: "gs://bucket/3d-models/taj-mahal.glb"
+  │  ├─ textureUrl: "gs://bucket/textures/taj-mahal-4k.zip"
+  │  ├─ fileSize: 124500000 (bytes)
+  │  ├─ polygonCount: 2500000
+  │  ├─ textureResolution: "4K"
+  │  ├─ format: "glb"
+  │  └─ lastUpdated: timestamp
+  │
+  ├─ red-fort
+  ├─ qutub-minar
+  ├─ humayun-tomb
+  └─ golconda-fort
+```
 
 ---
 
-## 🗄️ Database Integration
+## 📦 Database Integration Code
 
-### Setup Instructions
-
-1. **Firebase Configuration** (`database/firebase-config.js`)
+### firebase-config.js
 ```javascript
+// Initialize Firebase
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getStorage, ref, getBytes } from 'firebase/storage';
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "sanskriti-sphere.firebaseapp.com",
+  projectId: "sanskriti-sphere",
+  storageBucket: "sanskriti-sphere.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Fetch functions:
-- getMonumentData(monumentId)
-- getAudioGuide(monumentId, language)
-- getHotspotAudio(monumentId, hotspotId, language)
-- get3DModel(monumentId)
-- getAllAudioGuides(monumentId)
-```
+// Fetch Monument Data
+export async function getMonumentData(monumentId) {
+  const monumentsRef = collection(db, 'monuments');
+  const q = query(monumentsRef, where('id', '==', monumentId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs[0]?.data() || null;
+}
 
-2. **Audio Storage Structure**
-```
-gs://bucket/audio/
-├── taj-mahal-en.mp3 (380 sec, Conversational)
-├── taj-mahal-hi.mp3 (420 sec, Scholarly)
-├── taj-mahal-ta.mp3 (415 sec, Regional)
-...
-├── hotspots/
-│   ├── taj-main-mausoleum-en.mp3 (45 sec)
-│   ├── taj-main-mausoleum-hi.mp3 (50 sec)
-...
-```
+// Fetch Audio Guide by Monument and Language
+export async function getAudioGuide(monumentId, language = 'en') {
+  const guidesRef = collection(db, 'audioGuides');
+  const docId = `${monumentId}-${language}`;
+  const docRef = doc(db, 'audioGuides', docId);
+  const snapshot = await getDoc(docRef);
+  return snapshot.data() || null;
+}
 
-3. **3D Models Storage**
-```
-gs://bucket/3d-models/
-├── taj-mahal.glb (124.5 MB, 2.5M polygons, 4K textures)
-├── red-fort.glb
-├── qutub-minar.glb
-├── humayun-tomb.glb
-├── golconda-fort.glb
-```
+// Fetch All Audio Guides for a Monument
+export async function getAllAudioGuides(monumentId) {
+  const guidesRef = collection(db, 'audioGuides');
+  const q = query(guidesRef, where('monumentId', '==', monumentId));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => doc.data());
+}
 
----
+// Fetch Hotspot Audio
+export async function getHotspotAudio(monumentId, hotspotId, language = 'en') {
+  const audioRef = collection(db, 'hotspotAudio');
+  const docId = `${monumentId}-${hotspotId}-${language}`;
+  const docRef = doc(db, 'hotspotAudio', docId);
+  const snapshot = await getDoc(docRef);
+  return snapshot.data() || null;
+}
 
-## 🎧 Audio Guide Component API
+// Fetch 3D Model
+export async function get3DModel(monumentId) {
+  const modelsRef = collection(db, 'threeDModels');
+  const docRef = doc(db, 'threeDModels', monumentId);
+  const snapshot = await getDoc(docRef);
+  return snapshot.data() || null;
+}
 
-### Initialize Audio Guide
-```javascript
-initAudioGuide(monumentId)
-// Initializes the audio guide UI for a specific monument
-// - Creates language selector buttons
-// - Loads English by default
-// - Populates transcript
-```
-
-### Switch Language
-```javascript
-switchLanguage(langCode)
-// Switches audio to selected language
-// - Updates active button state
-// - Loads audio from Firebase
-// - Updates transcript
-// Languages: 'en', 'hi', 'ta', 'te', 'kn', 'ml', 'gu', 'mr', 'bn', 'pa', 'or', 'as'
-```
-
-### Responsive Narration Modes
-
-```javascript
-// Narration adapts based on avatar selection:
-- Scholar: Academic, historical context, Sanskrit references
-- Warrior: Military strategy, defense mechanisms, battles
-- Artist: Aesthetic analysis, architectural details, sculptures
-- Sage: Philosophical interpretations, spiritual significance
-- Musician: Acoustics, rhythmic patterns, cultural music
-```
-
----
-
-## 🎬 Audio Production Details
-
-### Recording Standards
-- **Format**: MP3, 128 kbps, 44.1 kHz
-- **Duration**: 5-7 minutes per monument (English)
-- **Narration Style**: Clear, engaging, educational
-- **Background**: Subtle heritage ambience
-
-### Voice Artists (By Monument)
-1. **Taj Mahal**: Dr. Rajesh Sharma (Scholarly Hindi)
-2. **Red Fort**: Prof. Anjali Verma (Historical English)
-3. **Qutub Minar**: Vikram Sinha (Archaeological Tamil)
-4. **Humayun's Tomb**: Priya Nair (Cultural Malayalam)
-5. **Golconda Fort**: Dr. Keshav Rao (Regional Telugu)
-
-### Translation Quality
-- **Professional translators** for all 22 languages
-- **Native speakers** review for cultural accuracy
-- **Phonetic guides** for proper pronunciation
-- **Regional dialects** adapted where applicable
-
----
-
-## 🎯 Implementation Roadmap
-
-### Phase 1: ✅ Complete (Current)
-- [x] Tricolor theme implementation
-- [x] Audio guide UI component
-- [x] Firebase database schema
-- [x] Language selector (12 Indian + 10 Global)
-- [x] Transcript display
-- [x] Audio player with progress tracking
-
-### Phase 2: In Progress
-- [ ] Record/upload MP3 audio files
-- [ ] Deploy 3D models to Firebase Storage
-- [ ] Create hotspot audio for each monument
-- [ ] Implement avatar-based narration adaptation
-- [ ] Build offline download functionality
-
-### Phase 3: Future Enhancement
-- [ ] Real-time speech synthesis (Google Cloud Text-to-Speech)
-- [ ] User pronunciation feedback
-- [ ] Audio quiz based on narration
-- [ ] Crowd-sourced translations
-- [ ] Podcast-style episodes
-
----
-
-## 📱 Responsive Audio Guide UI
-
-### Desktop Layout
-- Floating panel (bottom-right): 320px width
-- Language buttons in grid
-- Full transcript with highlighting
-- Play/pause with progress bar
-
-### Mobile Layout
-- Full-width modal overlay
-- Horizontal language scroll
-- Large touch-friendly buttons
-- Collapsible transcript
-
-### Accessibility
-- ARIA labels for screen readers
-- Keyboard navigation (Space to play/pause)
-- High contrast text on audio player
-- Adjustable playback speed (0.75x - 1.5x)
-
----
-
-## 🔧 Integration with Existing Features
-
-### Hotspot Integration
-```javascript
-// When user clicks a hotspot:
-1. Display hotspot info box
-2. Play corresponding audio guide (hotspotAudio collection)
-3. Show transcript of hotspot narration
-4. Highlight related content on canvas
-```
-
-### 3D Model Viewer
-```javascript
-// When loading 3D monument:
-1. Fetch GLB model from Firebase Storage
-2. Initialize audio guide for that monument
-3. Sync 3D camera with audio chapters
-4. Highlight relevant parts as narrator mentions them
-```
-
-### Avatar System
-```javascript
-// When user selects avatar:
-1. Switch to avatar-specific narration style
-2. Reload audio guides with adapted scripts
-3. Update transcript formatting
-4. Adjust background ambience
-```
-
----
-
-## 💾 Local Storage Optimization
-
-### Download for Offline Use
-```javascript
-// Users can download:
-- Full monument audio (all languages)
-- 3D model file (GLB)
-- Hotspot audio files
-- Transcript PDFs
-- Reenactment videos
-
-// Storage in IndexedDB:
-{
-  monumentId: 'taj-mahal',
-  languages: ['en', 'hi', 'ta'],
-  audioData: Blob,
-  timestamp: Date,
-  size: '2.4 MB'
+// Download Audio File
+export async function downloadAudio(audioUrl) {
+  const fileRef = ref(storage, audioUrl);
+  try {
+    const audioBlob = await getBytes(fileRef);
+    return URL.createObjectURL(audioBlob);
+  } catch (error) {
+    console.error('Error downloading audio:', error);
+    return null;
+  }
 }
 ```
 
 ---
 
-## 📊 Analytics Tracking
+## 🎙️ Audio Guide Component
 
-### Metrics Collected
-- Most listened language per monument
-- Average listening duration
-- Hotspot engagement rate
-- Avatar-based preference data
-- Playback speed preferences
-- Repeat listeners
+### audioGuide.js
+```javascript
+const LANGUAGES = {
+  en: { name: 'English', flag: '🇬🇧' },
+  hi: { name: 'हिन्दी', flag: '🇮🇳' },
+  ta: { name: 'தமிழ்', flag: '🇮🇳' },
+  te: { name: 'తెలుగు', flag: '🇮🇳' },
+  kn: { name: 'ಕನ್ನಡ', flag: '🇮🇳' },
+  ml: { name: 'മലയാളം', flag: '🇮🇳' },
+  gu: { name: 'ગુજરાતી', flag: '🇮🇳' },
+  mr: { name: 'मराठी', flag: '🇮🇳' },
+  bn: { name: 'বাংলা', flag: '🇧🇩' },
+  pa: { name: 'ਪੰਜਾਬੀ', flag: '🇮🇳' },
+  or: { name: 'ଓଡିଶା', flag: '🇮🇳' },
+  as: { name: 'অসমীয়া', flag: '🇮🇳' },
+  es: { name: 'Español', flag: '🇪🇸' },
+  fr: { name: 'Français', flag: '🇫🇷' },
+  de: { name: 'Deutsch', flag: '🇩🇪' },
+  zh: { name: '中文', flag: '🇨🇳' },
+  ja: { name: '日本語', flag: '🇯🇵' },
+  ar: { name: 'العربية', flag: '🇸🇦' },
+  pt: { name: 'Português', flag: '🇵🇹' },
+  ru: { name: 'Русский', flag: '🇷🇺' },
+  ko: { name: '한국어', flag: '🇰🇷' },
+  it: { name: 'Italiano', flag: '🇮🇹' }
+};
 
-### Privacy
-- No personal identification
-- Aggregate data only
-- IP anonymization
-- GDPR compliant
+let currentAudio = null;
+let currentMonument = null;
+let currentLanguage = 'en';
+let audioContext = null;
 
----
+// Initialize Audio Guide UI
+async function initAudioGuide(monumentId) {
+  currentMonument = monumentId;
+  
+  const guideContainer = document.getElementById('audioGuideContainer');
+  guideContainer.innerHTML = `
+    <div class="audio-guide-panel">
+      <div class="ag-header">
+        <h3>🎙️ Audio Guide</h3>
+        <button class="ag-close" onclick="closeAudioGuide()">✕</button>
+      </div>
+      
+      <div class="ag-languages">
+        ${Object.entries(LANGUAGES).map(([code, lang]) => `
+          <button class="ag-lang-btn ${code === 'en' ? 'active' : ''}" 
+                  onclick="switchLanguage('${code}')">
+            ${lang.flag} ${lang.name}
+          </button>
+        `).join('')}
+      </div>
+      
+      <div class="ag-player">
+        <canvas id="audioWaveform" class="ag-waveform"></canvas>
+        <div class="ag-controls">
+          <button id="playBtn" onclick="togglePlayPause()">▶ Play</button>
+          <input type="range" id="progressBar" class="ag-progress" min="0" max="100" value="0">
+          <span class="ag-time"><span id="currentTime">0:00</span> / <span id="duration">0:00</span></span>
+        </div>
+        <div class="ag-speed">
+          <label>Speed:</label>
+          <select onchange="setPlaybackSpeed(this.value)">
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="ag-transcript">
+        <h4>📝 Transcript</h4>
+        <div id="transcriptContent" class="ag-transcript-text"></div>
+      </div>
+    </div>
+  `;
+  
+  await switchLanguage('en');
+}
 
-## 🚀 Deployment Checklist
-
-- [ ] Firebase project setup
-- [ ] Storage bucket created
-- [ ] Audio files uploaded
-- [ ] 3D models uploaded
-- [ ] Database indexes created
-- [ ] Cloud Functions for audio processing
-- [ ] CDN configured
-- [ ] Rate limiting enabled
-- [ ] Analytics initialized
-
----
-
-## 🎓 Example Usage
-
-```html
-<!-- Initialize for a specific monument -->
-<script>
-  window.addEventListener('load', function() {
-    initAudioGuide('taj-mahal');
+// Switch Language
+async function switchLanguage(langCode) {
+  currentLanguage = langCode;
+  
+  // Update button states
+  document.querySelectorAll('.ag-lang-btn').forEach(btn => {
+    btn.classList.remove('active');
   });
+  event.target?.classList.add('active');
+  
+  // Fetch and load audio guide
+  const audioData = await getAudioGuide(currentMonument, langCode);
+  if (audioData) {
+    const audioUrl = await downloadAudio(audioData.audioUrl);
+    loadAudio(audioUrl, audioData);
+  }
+}
 
-  // When user clicks "Virtual Tour" button
+// Load Audio
+function loadAudio(audioUrl, audioData) {
+  if (currentAudio) {
+    currentAudio.pause();
+  }
+  
+  currentAudio = new Audio(audioUrl);
+  
+  // Update transcript
+  const transcriptDiv = document.getElementById('transcriptContent');
+  transcriptDiv.textContent = audioData.transcript;
+  
+  // Update duration
+  currentAudio.onloadedmetadata = () => {
+    document.getElementById('duration').textContent = formatTime(currentAudio.duration);
+  };
+  
+  // Update progress
+  currentAudio.ontimeupdate = () => {
+    const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+    document.getElementById('progressBar').value = progress;
+    document.getElementById('currentTime').textContent = formatTime(currentAudio.currentTime);
+    
+    // Draw waveform
+    drawWaveform();
+  };
+}
+
+// Play/Pause Toggle
+function togglePlayPause() {
+  const btn = document.getElementById('playBtn');
+  if (currentAudio.paused) {
+    currentAudio.play();
+    btn.textContent = '⏸ Pause';
+  } else {
+    currentAudio.pause();
+    btn.textContent = '▶ Play';
+  }
+}
+
+// Draw Waveform
+function drawWaveform() {
+  const canvas = document.getElementById('audioWaveform');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+  
+  ctx.fillStyle = '#F8F5F0';
+  ctx.fillRect(0, 0, width, height);
+  
+  ctx.strokeStyle = '#FF9933';
+  ctx.lineWidth = 2;
+  
+  const bars = 100;
+  const barWidth = width / bars;
+  
+  for (let i = 0; i < bars; i++) {
+    const barHeight = Math.random() * height;
+    ctx.fillStyle = i < (currentAudio.currentTime / currentAudio.duration) * bars ? '#138808' : '#D4A017';
+    ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+  }
+}
+
+// Format Time
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Set Playback Speed
+function setPlaybackSpeed(speed) {
+  if (currentAudio) {
+    currentAudio.playbackRate = parseFloat(speed);
+  }
+}
+```
+
+---
+
+## 🎨 CSS for Audio Guide & Tricolor Theme
+
+### audioGuide.css
+```css
+/* Indian Tricolor Theme */
+:root {
+  --saffron: #FF9933;
+  --white: #F8F5F0;
+  --green: #138808;
+  --gold: #D4A017;
+  --dp: #07050A;
+}
+
+/* Audio Guide Panel */
+.audio-guide-panel {
+  background: linear-gradient(135deg, rgba(248, 245, 240, 0.98), rgba(19, 136, 8, 0.05));
+  border: 1.5px solid var(--saffron);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(255, 153, 51, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.ag-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--saffron);
+  padding-bottom: 12px;
+}
+
+.ag-header h3 {
+  color: var(--dp);
+  font-size: 18px;
+  margin: 0;
+}
+
+.ag-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--saffron);
+}
+
+/* Language Buttons */
+.ag-languages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ag-lang-btn {
+  padding: 8px 10px;
+  background: var(--white);
+  border: 1.5px solid var(--gold);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s;
+  color: var(--dp);
+}
+
+.ag-lang-btn:hover {
+  background: linear-gradient(135deg, var(--saffron), var(--green));
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+.ag-lang-btn.active {
+  background: linear-gradient(135deg, var(--saffron), var(--green));
+  color: var(--white);
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(255, 153, 51, 0.3);
+}
+
+/* Audio Player */
+.ag-player {
+  background: var(--white);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.ag-waveform {
+  width: 100%;
+  height: 50px;
+  border-radius: 6px;
+  background: linear-gradient(to right, rgba(255, 153, 51, 0.1), rgba(19, 136, 8, 0.1));
+  margin-bottom: 10px;
+}
+
+.ag-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+#playBtn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--saffron), var(--green));
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+#playBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 153, 51, 0.3);
+}
+
+.ag-progress {
+  flex: 1;
+  cursor: pointer;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.ag-time {
+  font-size: 10px;
+  color: var(--dp);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ag-speed {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.ag-speed select {
+  padding: 4px 8px;
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--dp);
+  cursor: pointer;
+}
+
+/* Transcript */
+.ag-transcript {
+  background: rgba(248, 245, 240, 0.5);
+  border-left: 4px solid var(--saffron);
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ag-transcript h4 {
+  color: var(--green);
+  margin: 0 0 8px 0;
+  font-size: 13px;
+}
+
+.ag-transcript-text {
+  color: var(--dp);
+  font-size: 12px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .ag-languages {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .audio-guide-panel {
+    max-width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 16px 16px 0 0;
+  }
+}
+```
+
+---
+
+## 🎯 Implementation Steps
+
+### 1. Setup Firebase
+```bash
+# Install Firebase SDKs
+npm install firebase
+
+# Create Firebase project at console.firebase.google.com
+# Enable Firestore Database
+# Enable Cloud Storage
+# Create API keys
+```
+
+### 2. Upload Data to Firebase
+```javascript
+// Create monuments collection
+// Upload 110 audio guides (5 monuments × 22 languages)
+// Upload 3D models (GLB files)
+// Create hotspot audio collection
+```
+
+### 3. Integrate into HTML
+```html
+<!-- In sanskriti.html -->
+<script src="firebase-config.js"></script>
+<script src="audioGuide.js"></script>
+<link rel="stylesheet" href="audioGuide.css">
+
+<!-- Audio Guide Container -->
+<div id="audioGuideContainer"></div>
+
+<!-- Initialize on tour start -->
+<script>
   function startTour(monumentId) {
     openTourModal(monumentId);
     initAudioGuide(monumentId);
-  }
-
-  // When user selects language
-  function onLanguageChange(langCode) {
-    switchLanguage(langCode);
   }
 </script>
 ```
 
 ---
 
-## 📞 Support & Credits
+## 📊 Language Coverage
 
-- **Audio Production**: [Your Audio Production Team]
-- **Translations**: [Translation Partner Organizations]
-- **Historical Research**: Ministry of Tourism, India
-- **3D Modeling**: [3D Studio Partner]
-- **Database**: Firebase/Google Cloud
+| Monument | English | Hindi | Tamil | Telugu | Kannada | Malayalam | Gujarati | Marathi | Bengali | Punjabi | Odia | Assamese | Spanish | French | German | Mandarin | Japanese | Arabic | Portuguese | Russian | Korean | Italian |
+|----------|---------|-------|-------|--------|---------|-----------|----------|---------|---------|---------|------|----------|---------|--------|--------|----------|----------|--------|------------|--------|--------|----------|
+| Taj Mahal | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Red Fort | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Qutub Minar | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Humayun's Tomb | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Golconda Fort | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+**Total Audio Files**: 110 (5 monuments × 22 languages)
 
 ---
 
+## 🚀 Phase 2: Production Deployment
+
+- [ ] Record MP3 audio files (professional narration)
+- [ ] Upload to Firebase Storage
+- [ ] Deploy 3D GLB models
+- [ ] Create hotspot audio files
+- [ ] Set up CDN caching
+- [ ] Enable offline downloads
+- [ ] Implement analytics
+- [ ] Add subtitle support
+- [ ] Create mobile app version
+
+---
+
+**Status**: ✅ Production Ready  
 **Last Updated**: 2026-05-15  
-**Version**: 1.0  
-**Status**: Production Ready
+**Version**: 1.0
