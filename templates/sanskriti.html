@@ -8,8 +8,9 @@
 <style>
 /* ═══ ROOT ═══ */
 :root{
-  --s:#FF6B1A;--s2:#E8A020;--g:#D4A017;--g2:#F2C94C;
-  --tl:#14BDAC;--tl2:#00e8d0;--iv:#FAF3E0;--dp:#07050A;
+  --tri-saffron:#FF9933;--tri-white:#FFFFFF;--tri-green:#138808;
+  --s:#FF9933;--s2:#E8A020;--g:#D4A017;--g2:#F2C94C;
+  --tl:#138808;--tl2:#2FD14A;--iv:#FFFFFF;--dp:#07050A;
   --dk:#120C04;--sf:#171008;--card:#1E1508;--brd:#352408;
   --mu:#8A6840;--dm:#3A2810;--ok:#3DD68C;--er:#F06070;
 }
@@ -225,12 +226,48 @@ nav{position:fixed;top:0;left:0;right:0;z-index:800;padding:16px clamp(16px,4vw,
 .ag-sub{font-size:10px;color:var(--mu)}
 .ag-btn{margin-left:auto;padding:8px 14px;background:linear-gradient(135deg,var(--s),var(--s2));color:var(--dk);border-radius:8px;font-size:11px;font-weight:700;flex-shrink:0;transition:all .2s}
 .ag-btn:hover{transform:scale(1.05)}
+.ag-main{flex:1;min-width:0}
+.ag-controls{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.ag-controls .ag-btn{margin-left:0}
+.ag-select{max-width:150px;padding:7px 9px;background:var(--dk);border:1px solid var(--brd);border-radius:8px;color:var(--mu);font-size:11px}
+.ag-rate{width:76px;accent-color:var(--s)}
+.ag-status{font-size:10px;color:var(--g2);flex-basis:100%;text-align:right;min-height:13px}
+@media(max-width:560px){.audio-guide{align-items:flex-start;flex-wrap:wrap}.ag-controls{width:100%;justify-content:flex-start;margin-left:34px}.ag-status{text-align:left}.ag-select{max-width:100%;flex:1}}
+.ai-chat{background:linear-gradient(135deg,rgba(20,189,172,.08),rgba(255,107,26,.05));border:1px solid var(--brd);border-radius:12px;padding:14px;margin-bottom:13px}
+.ai-chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.ai-chat-title{font-size:12px;font-weight:700;color:var(--iv)}
+.ai-chat-status{font-size:10px;color:var(--tl2)}
+.ai-chat-log{max-height:150px;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;padding-right:4px}
+.ai-msg{font-size:12px;line-height:1.55;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.05)}
+.ai-msg.user{align-self:flex-end;background:rgba(255,107,26,.12);color:var(--iv);max-width:86%}
+.ai-msg.guide{align-self:flex-start;background:rgba(20,189,172,.1);color:var(--mu);max-width:92%}
+.ai-chat-form{display:flex;gap:8px;align-items:center}
+.ai-chat-form input{flex:1;min-width:0;background:var(--dk);border:1px solid var(--brd);border-radius:9px;color:var(--iv);padding:10px 11px;font-size:12px}
+.ai-chat-form .ag-btn{margin-left:0}
+.ai-prompts{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.ai-chip{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--mu);font-size:10.5px;transition:all .2s}
+.ai-chip:hover{color:var(--iv);border-color:var(--tri-saffron);background:rgba(255,153,51,.12)}
+@media(max-width:560px){.ai-chat-form{flex-wrap:wrap}.ai-chat-form input{flex-basis:100%}.ai-chat-log{max-height:190px}}
 /* REENACTMENT */
 .rn-strip{background:rgba(20,189,172,.06);border:1px solid rgba(20,189,172,.2);border-radius:12px;padding:14px;margin-bottom:13px}
 .rn-ttl{font-size:11px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
 .rn-list{display:flex;flex-wrap:wrap;gap:7px}
 .rn-evt{padding:6px 12px;background:rgba(20,189,172,.08);border:1px solid rgba(20,189,172,.18);border-radius:8px;font-size:11px;color:var(--tl2);cursor:pointer;transition:all .2s}
 .rn-evt:hover{background:rgba(20,189,172,.15);transform:scale(1.03)}
+
+/* GLOBAL TRICOLOUR THEME */
+body{background:linear-gradient(180deg,rgba(255,153,51,.08) 0%,rgba(255,255,255,.02) 42%,rgba(19,136,8,.08) 100%),var(--dp)}
+.bg-fx{background:radial-gradient(ellipse 60% 50% at 8% 8%,rgba(255,153,51,.18),transparent 58%),radial-gradient(ellipse 45% 55% at 92% 88%,rgba(19,136,8,.16),transparent 62%),linear-gradient(180deg,rgba(255,153,51,.04),rgba(255,255,255,.025),rgba(19,136,8,.04))}
+nav,.mmenu{border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(7,5,10,.98),rgba(18,12,4,.86))}
+.nbrand,.hgrad{background:linear-gradient(135deg,var(--tri-saffron),var(--tri-white),var(--tri-green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nem,.bpri,.ncta,.ptab.on,.bsm,.vb.on,.ag-btn{background:linear-gradient(135deg,var(--tri-saffron),var(--tri-white) 52%,var(--tri-green));color:#071008}
+.mc,.mbox,.fc,.i3c,.avsec,.abcard,.tc,.audio-guide,.ai-chat,.rn-strip,.sb,.ic,.qw,.ar-pnl,.map-pnl,.doc-pnl{border-color:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.035)}
+.mc:hover,.fc:hover,.fc.on,.i3c:hover{border-color:var(--tri-saffron);box-shadow:0 18px 55px rgba(19,136,8,.14),0 10px 35px rgba(255,153,51,.1)}
+.tag,.hbadge,.hsi:hover,.hsi.on,.ai-msg.user{background:rgba(255,153,51,.1);border-color:rgba(255,153,51,.28)}
+.ai-msg.guide,.rn-strip,.i3c.on{background:rgba(19,136,8,.1);border-color:rgba(19,136,8,.26)}
+.utag{background:var(--tri-white);border-color:var(--tri-saffron);color:#071008}
+.vtag{background:rgba(19,136,8,.9);border-color:var(--tri-white);color:var(--tri-white)}
+.ld-fill,.wkf,.ag-progress{background:linear-gradient(90deg,var(--tri-saffron),var(--tri-white),var(--tri-green))}
 
 /* ═══ FEATURES ═══ */
 .fgr{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,2vw,20px)}
@@ -446,11 +483,11 @@ footer{position:relative;z-index:10;border-top:1px solid var(--brd);padding:clam
   <div class="ssu">Click any card to expand full technical details. All 6 features are live in this platform.</div>
   <div class="fgr">
     <div class="fc" onclick="togF(this)"><div class="fci">🥽</div><div class="fct">Immersive 3D Environments</div><div class="fcd">Photo-realistic reconstructions using photogrammetry and Unity Engine — walk every corridor as it appeared centuries ago.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Built from thousands of photographs processed through millimetre-precision photogrammetry. Textures include real material data — marble roughness, stone weathering, painted plaster. Five view modes: Walking Tour, Aerial View, Story Mode, AR Overlay, and Night Mode. Each monument has 5+ interactive hotspot pins that reveal detailed historical information when clicked.</div></div>
-    <div class="fc" onclick="togF(this)"><div class="fci">🤖</div><div class="fct">AI Storytelling Guide</div><div class="fcd">A personal AI historian narrates your journey in 22 languages, adapting stories to your age and interests using GPT-powered NLP.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Powered by GPT and IndicNLP. Speaks 22 Indian languages plus 15 global ones. Adjusts vocabulary for children vs researchers. References your declared interests — architecture, art, warfare, religion. Answers follow-up questions in real-time. Historical accuracy verified with Ministry of Tourism databases and peer-reviewed scholarship.</div></div>
+    <div class="fc" onclick="togF(this)"><div class="fci">🤖</div><div class="fct">AI Storytelling Guide</div><div class="fcd">A personal AI historian narrates your journey in Indian languages, adapting stories to your age and interests.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Built for Indian-language heritage learning with voice narration and follow-up questions. It references your declared interests — architecture, art, warfare, religion — and answers using the monument and hotspot knowledge inside the tour.</div></div>
     <div class="fc" onclick="togF(this)"><div class="fci">📜</div><div class="fct">Historical Re-enactments</div><div class="fcd">Witness key historical moments with holographic visuals — royal ceremonies, Mughal court, ancient battles, and sacred festivals.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Motion-captured animations combined with AI crowd simulations recreate royal durbars, religious processions, construction scenes, and pivotal battles. Each scene is scripted from primary historical sources and reviewed by historians at IIT and ASI. Users can choose their perspective: audience, participant, or aerial observer. Each monument has 3–5 selectable re-enactment events.</div></div>
     <div class="fc" onclick="togF(this)"><div class="fci">📍</div><div class="fct">Interactive Hotspots</div><div class="fcd">Touch any glowing pin on the canvas for instant AI-powered insights — dating, artist identity, construction techniques, and cultural significance.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Over 50,000 hotspots mapped across 500+ sites. Each links to a knowledge graph containing provenance data, related artworks, comparative architecture from other cultures, and bibliographic references. YOLO-based image recognition identifies unlabelled artifacts from user photographs with 94% accuracy. Hotspot pins animate and pulse to guide user attention to key points of interest.</div></div>
     <div class="fc" onclick="togF(this)"><div class="fci">🌍</div><div class="fct">Remote Site Access</div><div class="fcd">Explore physically inaccessible heritage sites — restricted cave interiors, fragile ruins, remote mountain temples.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Many of India's most fragile sites are closed to physical visitors. Sanskriti Sphere provides the only immersive access to sites like the Bagh Caves, Undavalli cave shrines, and ASI-restricted excavations. Drone photogrammetry captures these sites without physical intrusion. Virtual visits generate no carbon emissions and cause zero wear to irreplaceable surfaces.</div></div>
-    <div class="fc" onclick="togF(this)"><div class="fci">🌐</div><div class="fct">Multilingual Support</div><div class="fcd">Full platform support for 22 Indian languages and 15 global languages with authentic regional audio guides and cultural phrasebooks.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Built on IndicNLP and Bhashini APIs. Every hotspot, story, and quiz available in Devanagari, Tamil, Telugu, Kannada, Malayalam, Bengali, Odia, Punjabi, Gujarati, Marathi, and more. Text-to-speech uses authentic regional voice actors — not synthetic TTS. Cultural phrasebooks teach regional idioms. Audio guides can be downloaded for offline use in remote areas.</div></div>
+    <div class="fc" onclick="togF(this)"><div class="fci">🌐</div><div class="fct">Indian Language Support</div><div class="fcd">Focused support for Indian languages with regional audio guides, voice chat, and cultural phrasebooks.</div><div class="fc-arr">Tap to expand ▾</div><div class="fcm">Built around Indian language access: Hindi, Tamil, Telugu, Kannada, Malayalam, Bengali, Odia, Punjabi, Gujarati, Marathi, Assamese, Urdu, Sanskrit, and English India. Hotspots, stories, and guided answers are designed for Indian heritage learning.</div></div>
   </div>
 </div>
 </div>
@@ -626,8 +663,29 @@ footer{position:relative;z-index:10;border-top:1px solid var(--brd);padding:clam
       <!-- AUDIO GUIDE -->
       <div class="audio-guide">
         <div class="ag-icon">🎙️</div>
-        <div><div class="ag-title" id="agTitle">AI Audio Guide</div><div class="ag-sub">Narrated by regional historian · Available in 22 languages</div></div>
-        <button class="ag-btn" onclick="playAudio()">▶ Play</button>
+        <div class="ag-main"><div class="ag-title" id="agTitle">AI Audio Guide</div><div class="ag-sub" id="agSub">Browser voice narration with hotspot support</div></div>
+        <div class="ag-controls">
+          <select class="ag-select" id="agVoice" title="Indian guide language" onchange="stopAudioGuide();resetAiGuide()"></select>
+          <input class="ag-rate" id="agRate" type="range" min="0.75" max="1.35" step="0.05" value="1" title="Narration speed">
+          <button class="ag-btn" id="agBtn" onclick="playAudio()">Play</button>
+          <button class="ag-btn" onclick="stopAudioGuide()">Stop</button>
+          <div class="ag-status" id="agStatus">Ready</div>
+        </div>
+      </div>
+      <div class="ai-chat">
+        <div class="ai-chat-head">
+          <div class="ai-chat-title">AI Voice Chat Guide</div>
+          <div class="ai-chat-status" id="aiChatStatus">Ask by text or microphone</div>
+        </div>
+        <div class="ai-chat-log" id="aiChatLog">
+          <div class="ai-msg guide">Namaste. Ask me about the monument, history, architecture, or any hotspot.</div>
+        </div>
+        <div class="ai-prompts" id="aiPrompts"></div>
+        <div class="ai-chat-form">
+          <input id="aiQuestion" type="text" placeholder="Ask about this monument..." onkeydown="if(event.key==='Enter')askAiGuide()">
+          <button class="ag-btn" onclick="startVoiceQuestion()">Mic</button>
+          <button class="ag-btn" onclick="askAiGuide()">Ask</button>
+        </div>
       </div>
       <!-- REENACTMENT -->
       <div class="rn-strip">
@@ -878,6 +936,75 @@ const FLY_PTS=['APPROACH 500m','NORTH ELEVATION','ZENITH VIEW','EAST ELEVATION',
 //  STATE
 // ═══════════════════════════════════════════════════════
 let curMon=null,curView='walk',animF=null,tick=0;
+const audioGuide={utterance:null,playing:false,paused:false,voices:[],text:'',queue:[],queueIndex:0,currentLabel:''};
+const aiGuide={lastQuestion:'',lastTopic:''};
+const INDIAN_LANGUAGES=[
+  {code:'en-IN',name:'English (India)'},
+  {code:'hi-IN',name:'Hindi'},
+  {code:'ta-IN',name:'Tamil'},
+  {code:'te-IN',name:'Telugu'},
+  {code:'kn-IN',name:'Kannada'},
+  {code:'ml-IN',name:'Malayalam'},
+  {code:'mr-IN',name:'Marathi'},
+  {code:'gu-IN',name:'Gujarati'},
+  {code:'bn-IN',name:'Bengali'},
+  {code:'pa-IN',name:'Punjabi'},
+  {code:'or-IN',name:'Odia'},
+  {code:'as-IN',name:'Assamese'},
+  {code:'ur-IN',name:'Urdu'},
+  {code:'sa-IN',name:'Sanskrit'}
+];
+const GUIDE_I18N={
+  'en-IN':{
+    ready:'Ready',ask:'Ask by text or microphone',hello:'Namaste. Ask me about the monument, history, architecture, or any hotspot.',
+    guide:m=>`Namaste. Welcome to ${m.name}. It is located in ${m.loc}. It belongs to ${m.era} and follows the ${m.style} style. ${m.desc} Important points to explore are ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,
+    location:m=>`${m.name} is located in ${m.loc}.`,built:m=>`${m.name} belongs to ${m.era}. It was built by ${m.builtBy}.`,style:m=>`${m.name} follows the ${m.style} architectural style. ${m.desc}`,builder:m=>`${m.name} was built by ${m.builtBy} of the ${m.dynasty} tradition.`,hotspots:m=>`The main points of interest are ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}. Ask me about any one of them.`,story:m=>m.story,known:m=>`${m.name} is known for ${m.tags.join(', ')}. ${m.desc}`,fallback:m=>`${m.name}: ${m.desc} You can ask about history, builder, location, architecture, or hotspots.`,hotspot:h=>`${h.t}. ${h.p}`
+  },
+  'hi-IN':{
+    ready:'तैयार',ask:'टेक्स्ट या माइक्रोफोन से पूछें',hello:'नमस्ते। इस स्मारक, इतिहास, वास्तुकला या किसी हॉटस्पॉट के बारे में पूछिए।',
+    guide:m=>`नमस्ते। ${m.name} की यात्रा में आपका स्वागत है। यह ${m.loc} में स्थित है। इसका काल ${m.era} है और इसकी शैली ${m.style} है। यह भारतीय विरासत का महत्वपूर्ण स्मारक है। देखने योग्य प्रमुख बिंदु हैं ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}।`,
+    location:m=>`${m.name} ${m.loc} में स्थित है।`,built:m=>`${m.name} का काल ${m.era} है। इसे ${m.builtBy} ने बनवाया था।`,style:m=>`${m.name} की वास्तुकला शैली ${m.style} है।`,builder:m=>`${m.name} का निर्माण ${m.builtBy} ने ${m.dynasty} परंपरा में कराया था।`,hotspots:m=>`मुख्य दर्शनीय बिंदु हैं ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}। किसी एक नाम के बारे में पूछिए।`,story:m=>`${m.name} की कहानी भारतीय इतिहास, कला और स्मृति से जुड़ी है। ${m.story}`,known:m=>`${m.name} इन बातों के लिए प्रसिद्ध है: ${m.tags.join(', ')}।`,fallback:m=>`${m.name} के बारे में आप इतिहास, निर्माता, स्थान, वास्तुकला या हॉटस्पॉट पूछ सकते हैं।`,hotspot:h=>`${h.t}. ${h.p}`
+  },
+  'ta-IN':{
+    ready:'தயார்',ask:'உரை அல்லது மைக்ரோஃபோன் மூலம் கேளுங்கள்',hello:'வணக்கம். நினைவிடம், வரலாறு, கட்டிடக்கலை அல்லது ஹாட்ஸ்பாட் பற்றி கேளுங்கள்.',
+    guide:m=>`வணக்கம். ${m.name} சுற்றுலாவிற்கு வரவேற்கிறோம். இது ${m.loc} இல் உள்ளது. இதன் காலம் ${m.era}; கட்டிட பாணி ${m.style}. பார்க்க வேண்டிய முக்கிய இடங்கள்: ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,
+    location:m=>`${m.name} ${m.loc} இல் உள்ளது.`,built:m=>`${m.name} ${m.era} காலத்தைச் சேர்ந்தது. இதை ${m.builtBy} கட்டினார்.`,style:m=>`${m.name} இன் கட்டிட பாணி ${m.style}.`,builder:m=>`${m.name} ஐ ${m.builtBy} கட்டினார்.`,hotspots:m=>`முக்கிய இடங்கள்: ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,story:m=>`${m.name} இந்திய வரலாறு மற்றும் கலையுடன் ஆழமாக தொடர்புடையது. ${m.story}`,known:m=>`${m.name} ${m.tags.join(', ')} என்பவற்றிற்காக அறியப்படுகிறது.`,fallback:m=>`${m.name} பற்றி வரலாறு, கட்டியவர், இடம், கட்டிடக்கலை அல்லது ஹாட்ஸ்பாட் கேட்கலாம்.`,hotspot:h=>`${h.t}. ${h.p}`
+  },
+  'te-IN':{
+    ready:'సిద్ధం',ask:'టెక్స్ట్ లేదా మైక్రోఫోన్ ద్వారా అడగండి',hello:'నమస్తే. స్మారకం, చరిత్ర, నిర్మాణ శైలి లేదా హాట్‌స్పాట్ గురించి అడగండి.',
+    guide:m=>`నమస్తే. ${m.name} యాత్రకు స్వాగతం. ఇది ${m.loc} లో ఉంది. దీని కాలం ${m.era}; శైలి ${m.style}. చూడవలసిన ముఖ్యమైన ప్రదేశాలు: ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,
+    location:m=>`${m.name} ${m.loc} లో ఉంది.`,built:m=>`${m.name} ${m.era} కాలానికి చెందింది. దీనిని ${m.builtBy} నిర్మించారు.`,style:m=>`${m.name} నిర్మాణ శైలి ${m.style}.`,builder:m=>`${m.name} ను ${m.builtBy} నిర్మించారు.`,hotspots:m=>`ముఖ్యమైన ప్రదేశాలు: ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,story:m=>`${m.name} భారత చరిత్ర, కళ మరియు వారసత్వంతో సంబంధం కలిగిన స్మారకం. ${m.story}`,known:m=>`${m.name} ${m.tags.join(', ')} కోసం ప్రసిద్ధి చెందింది.`,fallback:m=>`${m.name} గురించి చరిత్ర, నిర్మించినవారు, స్థానం, శైలి లేదా హాట్‌స్పాట్ అడగవచ్చు.`,hotspot:h=>`${h.t}. ${h.p}`
+  },
+  'kn-IN':{
+    ready:'ಸಿದ್ಧ',ask:'ಪಠ್ಯ ಅಥವಾ ಮೈಕ್ ಮೂಲಕ ಕೇಳಿ',hello:'ನಮಸ್ತೆ. ಸ್ಮಾರಕ, ಇತಿಹಾಸ, ವಾಸ್ತುಶಿಲ್ಪ ಅಥವಾ ಹಾಟ್‌ಸ್ಪಾಟ್ ಬಗ್ಗೆ ಕೇಳಿ.',
+    guide:m=>`ನಮಸ್ತೆ. ${m.name} ಪ್ರವಾಸಕ್ಕೆ ಸ್ವಾಗತ. ಇದು ${m.loc} ನಲ್ಲಿ ಇದೆ. ಇದರ ಕಾಲ ${m.era}; ವಾಸ್ತುಶೈಲಿ ${m.style}. ನೋಡಬೇಕಾದ ಮುಖ್ಯ ಸ್ಥಳಗಳು: ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,
+    location:m=>`${m.name} ${m.loc} ನಲ್ಲಿ ಇದೆ.`,built:m=>`${m.name} ${m.era} ಕಾಲಕ್ಕೆ ಸೇರಿದೆ. ಇದನ್ನು ${m.builtBy} ನಿರ್ಮಿಸಿದರು.`,style:m=>`${m.name} ಯ ವಾಸ್ತುಶೈಲಿ ${m.style}.`,builder:m=>`${m.name} ಅನ್ನು ${m.builtBy} ನಿರ್ಮಿಸಿದರು.`,hotspots:m=>`ಮುಖ್ಯ ಸ್ಥಳಗಳು: ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,story:m=>`${m.name} ಭಾರತೀಯ ಇತಿಹಾಸ ಮತ್ತು ಕಲೆಯೊಂದಿಗೆ ಸಂಬಂಧಿಸಿದ ಪ್ರಮುಖ ಪರಂಪರೆ. ${m.story}`,known:m=>`${m.name} ${m.tags.join(', ')} ಕಾರಣಗಳಿಂದ ಪ್ರಸಿದ್ಧ.`,fallback:m=>`${m.name} ಬಗ್ಗೆ ಇತಿಹಾಸ, ನಿರ್ಮಾಪಕ, ಸ್ಥಳ, ವಾಸ್ತುಶೈಲಿ ಅಥವಾ ಹಾಟ್‌ಸ್ಪಾಟ್ ಕೇಳಬಹುದು.`,hotspot:h=>`${h.t}. ${h.p}`
+  }
+};
+function makeIndicGuide(s){
+  return {
+    ready:s.ready,ask:s.ask,hello:s.hello,
+    guide:m=>`${s.welcome} ${m.name}. ${s.loc} ${m.loc}. ${s.era} ${m.era}. ${s.style} ${m.style}. ${s.points} ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,
+    location:m=>`${m.name} ${s.loc} ${m.loc}.`,
+    built:m=>`${m.name}. ${s.era} ${m.era}. ${s.built} ${m.builtBy}.`,
+    style:m=>`${m.name}. ${s.style} ${m.style}.`,
+    builder:m=>`${m.name}. ${s.built} ${m.builtBy}.`,
+    hotspots:m=>`${s.points} ${Object.values(m.hs||{}).map(h=>h.t).join(', ')}.`,
+    story:m=>`${m.name}. ${s.history} ${m.story}`,
+    known:m=>`${m.name} ${s.famous} ${m.tags.join(', ')}.`,
+    fallback:m=>`${m.name}. ${s.help}`,
+    hotspot:h=>`${h.t}. ${h.p}`
+  };
+}
+GUIDE_I18N['ml-IN']=makeIndicGuide({ready:'തയ്യാർ',ask:'ടെക്സ്റ്റ് അല്ലെങ്കിൽ മൈക്രോഫോൺ വഴി ചോദിക്കുക',hello:'നമസ്തേ. സ്മാരകം, ചരിത്രം, വാസ്തുവിദ്യ അല്ലെങ്കിൽ ഹോട്ട്സ്പോട്ട് കുറിച്ച് ചോദിക്കൂ.',welcome:'നമസ്തേ. സ്വാഗതം',loc:'ഇത് സ്ഥിതി ചെയ്യുന്നത്',era:'കാലഘട്ടം',style:'വാസ്തു ശൈലി',points:'പ്രധാന സ്ഥലങ്ങൾ',built:'നിർമ്മിച്ചത്',history:'ഇത് ഇന്ത്യൻ ചരിത്രവും കലയും ബന്ധപ്പെട്ട പ്രധാന പൈതൃകമാണ്.',famous:'പ്രശസ്തമാണ്',help:'ചരിത്രം, നിർമ്മാതാവ്, സ്ഥലം, വാസ്തുവിദ്യ അല്ലെങ്കിൽ ഹോട്ട്സ്പോട്ട് ചോദിക്കാം.'});
+GUIDE_I18N['mr-IN']=makeIndicGuide({ready:'तयार',ask:'मजकूर किंवा मायक्रोफोनने विचारा',hello:'नमस्कार. स्मारक, इतिहास, वास्तुकला किंवा हॉटस्पॉटबद्दल विचारा.',welcome:'नमस्कार. स्वागत आहे',loc:'हे ठिकाण आहे',era:'कालखंड',style:'वास्तुशैली',points:'मुख्य पाहण्यासारखी ठिकाणे',built:'निर्माण केले',history:'हे भारतीय इतिहास आणि कलेशी जोडलेले महत्त्वाचे वारसा स्थळ आहे.',famous:'प्रसिद्ध आहे',help:'इतिहास, निर्माता, स्थान, वास्तुकला किंवा हॉटस्पॉट विचारू शकता.'});
+GUIDE_I18N['gu-IN']=makeIndicGuide({ready:'તૈયાર',ask:'ટેક્સ્ટ અથવા માઇક્રોફોનથી પૂછો',hello:'નમસ્તે. સ્મારક, ઇતિહાસ, સ્થાપત્ય અથવા હોટસ્પોટ વિશે પૂછો.',welcome:'નમસ્તે. સ્વાગત છે',loc:'આ આવેલું છે',era:'કાળ',style:'સ્થાપત્ય શૈલી',points:'મુખ્ય સ્થળો',built:'બાંધ્યું',history:'આ ભારતીય ઇતિહાસ અને કલાથી જોડાયેલું મહત્વપૂર્ણ વારસો છે.',famous:'માટે પ્રખ્યાત છે',help:'ઇતિહાસ, નિર્માતા, સ્થાન, સ્થાપત્ય અથવા હોટસ્પોટ વિશે પૂછો.'});
+GUIDE_I18N['bn-IN']=makeIndicGuide({ready:'প্রস্তুত',ask:'টেক্সট বা মাইক্রোফোনে জিজ্ঞাসা করুন',hello:'নমস্কার। স্মৃতিস্তম্ভ, ইতিহাস, স্থাপত্য বা হটস্পট সম্পর্কে জিজ্ঞাসা করুন।',welcome:'নমস্কার। স্বাগতম',loc:'এটি অবস্থিত',era:'সময়কাল',style:'স্থাপত্য শৈলী',points:'প্রধান দর্শনীয় স্থান',built:'নির্মাণ করেছেন',history:'এটি ভারতীয় ইতিহাস ও শিল্পের সঙ্গে যুক্ত গুরুত্বপূর্ণ ঐতিহ্য।',famous:'জন্য বিখ্যাত',help:'ইতিহাস, নির্মাতা, অবস্থান, স্থাপত্য বা হটস্পট সম্পর্কে জিজ্ঞাসা করতে পারেন।'});
+GUIDE_I18N['pa-IN']=makeIndicGuide({ready:'ਤਿਆਰ',ask:'ਟੈਕਸਟ ਜਾਂ ਮਾਈਕ ਨਾਲ ਪੁੱਛੋ',hello:'ਨਮਸਤੇ। ਸਮਾਰਕ, ਇਤਿਹਾਸ, ਵਾਸਤੁਕਲਾ ਜਾਂ ਹਾਟਸਪਾਟ ਬਾਰੇ ਪੁੱਛੋ।',welcome:'ਨਮਸਤੇ। ਸਵਾਗਤ ਹੈ',loc:'ਇਹ ਸਥਿਤ ਹੈ',era:'ਕਾਲ',style:'ਵਾਸਤੁਕਲਾ ਸ਼ੈਲੀ',points:'ਮੁੱਖ ਥਾਵਾਂ',built:'ਬਣਾਇਆ',history:'ਇਹ ਭਾਰਤੀ ਇਤਿਹਾਸ ਅਤੇ ਕਲਾ ਨਾਲ ਜੁੜੀ ਮਹੱਤਵਪੂਰਨ ਵਿਰਾਸਤ ਹੈ।',famous:'ਲਈ ਪ੍ਰਸਿੱਧ ਹੈ',help:'ਇਤਿਹਾਸ, ਨਿਰਮਾਤਾ, ਸਥਾਨ, ਵਾਸਤੁਕਲਾ ਜਾਂ ਹਾਟਸਪਾਟ ਪੁੱਛ ਸਕਦੇ ਹੋ।'});
+GUIDE_I18N['or-IN']=makeIndicGuide({ready:'ପ୍ରସ୍ତୁତ',ask:'ଟେକ୍ସଟ୍ କିମ୍ବା ମାଇକ୍ ଦ୍ୱାରା ପଚାରନ୍ତୁ',hello:'ନମସ୍କାର। ସ୍ମାରକ, ଇତିହାସ, ସ୍ଥାପତ୍ୟ କିମ୍ବା ହଟସ୍ପଟ ବିଷୟରେ ପଚାରନ୍ତୁ।',welcome:'ନମସ୍କାର। ସ୍ବାଗତ',loc:'ଏହା ଅବସ୍ଥିତ',era:'କାଳ',style:'ସ୍ଥାପତ୍ୟ ଶୈଳୀ',points:'ମୁଖ୍ୟ ସ୍ଥାନଗୁଡିକ',built:'ନିର୍ମାଣ କରିଥିଲେ',history:'ଏହା ଭାରତୀୟ ଇତିହାସ ଓ କଳା ସହିତ ଜଡିତ ଐତିହ୍ୟ।',famous:'ପାଇଁ ପ୍ରସିଦ୍ଧ',help:'ଇତିହାସ, ନିର୍ମାତା, ସ୍ଥାନ, ସ୍ଥାପତ୍ୟ କିମ୍ବା ହଟସ୍ପଟ ପଚାରନ୍ତୁ।'});
+GUIDE_I18N['as-IN']=makeIndicGuide({ready:'সাজু',ask:'টেক্সট বা মাইক্ৰফোনেৰে সোধক',hello:'নমস্কাৰ। স্মাৰক, ইতিহাস, স্থাপত্য বা হটস্পটৰ বিষয়ে সোধক।',welcome:'নমস্কাৰ। স্বাগতম',loc:'ইয়াৰ অৱস্থান',era:'যুগ',style:'স্থাপত্য শৈলী',points:'মুখ্য স্থানসমূহ',built:'নিৰ্মাণ কৰিছিল',history:'ই ভাৰতীয় ইতিহাস আৰু শিল্পৰ সৈতে জড়িত গুৰুত্বপূর্ণ ঐতিহ্য।',famous:'বাবে প্ৰসিদ্ধ',help:'ইতিহাস, নিৰ্মাতা, স্থান, স্থাপত্য বা হটস্পট সোধিব পাৰে।'});
+GUIDE_I18N['ur-IN']=makeIndicGuide({ready:'تیار',ask:'متن یا مائیکروفون سے پوچھیں',hello:'نمستے۔ یادگار، تاریخ، فن تعمیر یا ہاٹ اسپاٹ کے بارے میں پوچھیں۔',welcome:'نمستے۔ خوش آمدید',loc:'یہ واقع ہے',era:'دور',style:'تعمیراتی انداز',points:'اہم مقامات',built:'تعمیر کیا',history:'یہ بھارتی تاریخ اور فن سے جڑی اہم وراثت ہے۔',famous:'کے لیے مشہور ہے',help:'تاریخ، معمار، مقام، فن تعمیر یا ہاٹ اسپاٹ کے بارے میں پوچھ سکتے ہیں۔'});
+GUIDE_I18N['sa-IN']=makeIndicGuide({ready:'सज्जम्',ask:'पाठेन वा ध्वनिना पृच्छतु',hello:'नमस्ते। स्मारकस्य, इतिहासस्य, वास्तोः वा हॉटस्पॉट् विषये पृच्छतु।',welcome:'नमस्ते। स्वागतम्',loc:'इदं स्थितम्',era:'कालः',style:'वास्तुशैली',points:'मुख्यानि स्थानानि',built:'निर्मितम्',history:'इदं भारतस्य इतिहासेन कलया च सम्बद्धं महत्त्वपूर्णं धरोहरम्।',famous:'इत्यस्मै प्रसिद्धम्',help:'इतिहासं, निर्मातारं, स्थानं, वास्तुशैलीं वा हॉटस्पॉट् पृच्छतु।'});
 
 // ═══════════════════════════════════════════════════════
 //  CANVAS DRAW FUNCTIONS
@@ -1237,6 +1364,9 @@ function openTour(id){
   document.getElementById('ics').textContent=m.style;
   document.getElementById('tst').textContent=m.story;
   document.getElementById('agTitle').textContent=m.name+' — AI Audio Guide';
+  document.getElementById('agSub').textContent='Ready to narrate '+m.name+' with hotspot support';
+  resetAudioGuideUi();
+  resetAiGuide();
   // View buttons reset
   document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));document.querySelector('.vb').classList.add('on');
   setViewLabel('walk');
@@ -1249,7 +1379,7 @@ function openTour(id){
   document.body.style.overflow='hidden';
   requestAnimationFrame(()=>{rszCanvas();startAnim()});
 }
-function cTour(){document.getElementById('tourMod').classList.remove('open');document.body.style.overflow='';cancelAnimationFrame(animF)}
+function cTour(){stopAudioGuide();document.getElementById('tourMod').classList.remove('open');document.body.style.overflow='';cancelAnimationFrame(animF)}
 function rszCanvas(){const vp=document.getElementById('tvp'),cv=document.getElementById('tc');cv.width=vp.offsetWidth||900;cv.height=vp.offsetHeight||506}
 function setViewLabel(v){
   const info=VIEWS[v];document.getElementById('vlt').textContent=info.t;document.getElementById('vld').textContent=info.d;
@@ -1305,6 +1435,7 @@ function startAnim(){
       document.querySelectorAll('.hsi').forEach(s=>s.classList.remove('on'));
       document.querySelectorAll('.hsi').forEach(s=>{if(s.dataset.k===best.t)s.classList.add('on')});
       showHsDet(best.t,best.p);
+      if(audioGuide.playing||audioGuide.paused)speakText(guideLang().hotspot(best),'Hotspot: '+best.t);
       toast('📍 '+best.t,'gd',1200);
     } else document.getElementById('htip').classList.remove('show');
   };
@@ -1356,9 +1487,182 @@ function drawPins(ctx,cv,t){
 function buildHsList(m){
   document.getElementById('hsl').innerHTML=Object.entries(m.hs).map(([k,h])=>`<button class="hsi" data-k="${h.t}" onclick="clickHs(this,'${encodeURIComponent(k)}')">${h.i} ${h.t}</button>`).join('');
 }
-function clickHs(btn,ek){const k=decodeURIComponent(ek),h=curMon.hs[k];if(!h)return;document.querySelectorAll('.hsi').forEach(s=>s.classList.remove('on'));btn.classList.add('on');showHsDet(h.t,h.p);toast('📍 '+h.t,'gd',1200)}
+function clickHs(btn,ek){const k=decodeURIComponent(ek),h=curMon.hs[k];if(!h)return;document.querySelectorAll('.hsi').forEach(s=>s.classList.remove('on'));btn.classList.add('on');showHsDet(h.t,h.p);if(audioGuide.playing||audioGuide.paused)speakText(guideLang().hotspot(h),'Hotspot: '+h.t);toast('📍 '+h.t,'gd',1200)}
 function showHsDet(t,p){document.getElementById('hsdT').textContent=t;document.getElementById('hsdP').textContent=p;const d=document.getElementById('hsd');d.classList.add('show');d.scrollIntoView({behavior:'smooth',block:'nearest'})}
-function playAudio(){toast('🎙️ AI Audio Guide playing — '+curMon.name,'gd',3000)}
+function populateAudioVoices(){
+  if('speechSynthesis' in window)audioGuide.voices=speechSynthesis.getVoices();
+  const sel=document.getElementById('agVoice');
+  if(!sel)return;
+  const current=sel.value||'en-IN';
+  sel.innerHTML=INDIAN_LANGUAGES.map(l=>`<option value="${l.code}">${l.name}</option>`).join('');
+  sel.value=INDIAN_LANGUAGES.some(l=>l.code===current)?current:'en-IN';
+}
+function guideLang(){
+  const code=document.getElementById('agVoice')?.value||'en-IN';
+  return GUIDE_I18N[code]||GUIDE_I18N['en-IN'];
+}
+function resetAudioGuideUi(){
+  const btn=document.getElementById('agBtn'),st=document.getElementById('agStatus');
+  const g=guideLang();
+  if(btn)btn.textContent='Play';
+  if(st)st.textContent=g.ready;
+  audioGuide.playing=false;audioGuide.paused=false;audioGuide.utterance=null;
+}
+function buildAudioGuideText(){
+  if(!curMon)return '';
+  return guideLang().guide(curMon);
+}
+function splitSpeechText(text){
+  const clean=text.replace(/\s+/g,' ').trim();
+  const sentences=clean.match(/[^.!?।]+[.!?।]*/g)||[clean];
+  const chunks=[];
+  let buf='';
+  sentences.forEach(s=>{
+    const next=(buf+' '+s).trim();
+    if(next.length>190&&buf){chunks.push(buf);buf=s.trim()}
+    else buf=next;
+  });
+  if(buf)chunks.push(buf);
+  return chunks.length?chunks:[clean];
+}
+function selectedVoice(lang){
+  const base=lang.split('-')[0].toLowerCase();
+  return audioGuide.voices.find(v=>(v.lang||'').toLowerCase()===lang.toLowerCase())||
+    audioGuide.voices.find(v=>(v.lang||'').toLowerCase().startsWith(base))||
+    null;
+}
+function speakNextChunk(){
+  if(!audioGuide.playing||audioGuide.paused)return;
+  const text=audioGuide.queue[audioGuide.queueIndex];
+  if(!text){resetAudioGuideUi();const st=document.getElementById('agStatus');if(st)st.textContent='Finished';return}
+  const sel=document.getElementById('agVoice'),rate=document.getElementById('agRate'),btn=document.getElementById('agBtn'),st=document.getElementById('agStatus');
+  const lang=sel?.value||'en-IN';
+  const voice=selectedVoice(lang);
+  const u=new SpeechSynthesisUtterance(text);
+  if(voice)u.voice=voice;
+  u.lang=voice?.lang||lang;
+  u.rate=parseFloat(rate?.value||'1');
+  u.pitch=1;
+  u.volume=1;
+  u.onstart=()=>{if(btn)btn.textContent='Pause';if(st)st.textContent=voice?audioGuide.currentLabel:`${audioGuide.currentLabel} - install ${lang} voice pack if playback is silent`};
+  u.onend=()=>{audioGuide.queueIndex+=1;speakNextChunk()};
+  u.onerror=()=>{audioGuide.queueIndex+=1;if(audioGuide.queueIndex<audioGuide.queue.length)speakNextChunk();else{resetAudioGuideUi();toast('Could not play this language voice on this browser','er',3200)}};
+  audioGuide.utterance=u;
+  speechSynthesis.speak(u);
+}
+function speakText(text,label){
+  if(!('speechSynthesis' in window)){toast('Audio guide is not supported in this browser','er',3000);return}
+  speechSynthesis.cancel();
+  populateAudioVoices();
+  audioGuide.queue=splitSpeechText(text);
+  audioGuide.queueIndex=0;
+  audioGuide.currentLabel=label||'Narrating';
+  audioGuide.playing=true;
+  audioGuide.paused=false;
+  setTimeout(speakNextChunk,80);
+}
+function playAudio(){
+  if(!curMon)return;
+  if(!('speechSynthesis' in window)){toast('Audio guide is not supported in this browser','er',3000);return}
+  if(audioGuide.playing&&!audioGuide.paused){speechSynthesis.pause();audioGuide.paused=true;document.getElementById('agBtn').textContent='Resume';document.getElementById('agStatus').textContent='Paused';return}
+  if(audioGuide.paused){speechSynthesis.resume();audioGuide.paused=false;document.getElementById('agBtn').textContent='Pause';document.getElementById('agStatus').textContent='Narrating';return}
+  populateAudioVoices();
+  audioGuide.text=buildAudioGuideText();
+  speakText(audioGuide.text,curMon.name+' narration');
+  toast('🎙️ Audio guide started — '+curMon.name,'gd',2200);
+}
+function stopAudioGuide(){
+  if('speechSynthesis' in window)speechSynthesis.cancel();
+  audioGuide.queue=[];
+  audioGuide.queueIndex=0;
+  resetAudioGuideUi();
+}
+function resetAiGuide(){
+  const log=document.getElementById('aiChatLog'),q=document.getElementById('aiQuestion'),st=document.getElementById('aiChatStatus'),prompts=document.getElementById('aiPrompts');
+  const g=guideLang();
+  if(log)log.innerHTML=`<div class="ai-msg guide">${g.hello}</div>`;
+  if(q)q.value='';
+  if(st)st.textContent=g.ask;
+  aiGuide.lastQuestion='';
+  aiGuide.lastTopic='';
+  if(prompts&&curMon){
+    const firstHs=Object.values(curMon.hs||{})[0]?.t||'main hotspot';
+    prompts.innerHTML=[
+      'Tell me the story',
+      'Why is it famous?',
+      'Who built it?',
+      `Explain ${firstHs}`,
+      'What should I see first?'
+    ].map(p=>`<button class="ai-chip" onclick="askQuick('${p.replace(/'/g,"\\'")}')">${p}</button>`).join('');
+  }
+}
+function askQuick(text){
+  const input=document.getElementById('aiQuestion');
+  if(input)input.value=text;
+  askAiGuide();
+}
+function addAiMessage(kind,text){
+  const log=document.getElementById('aiChatLog');
+  if(!log)return;
+  const msg=document.createElement('div');
+  msg.className='ai-msg '+kind;
+  msg.textContent=text;
+  log.appendChild(msg);
+  log.scrollTop=log.scrollHeight;
+}
+function findHotspotAnswer(query){
+  const q=query.toLowerCase();
+  return Object.values(curMon?.hs||{}).find(h=>q.includes(h.t.toLowerCase())||h.t.toLowerCase().split(/\s+/).some(w=>w.length>4&&q.includes(w)));
+}
+function getAiGuideAnswer(question){
+  const g=guideLang();
+  if(!curMon)return 'Please open a monument tour first.';
+  const q=question.toLowerCase();
+  const has=(...words)=>words.some(w=>q.includes(w));
+  const hs=findHotspotAnswer(question);
+  if(hs)return g.hotspot(hs);
+  if(has('where','location','place','city','कहाँ','स्थान','जगह'))return g.location(curMon);
+  if(has('when','year','period','era','built','construction','created','कब','काल','वर्ष','निर्माण'))return g.built(curMon);
+  if(has('style','architecture','design','शैली','वास्तु','डिजाइन'))return g.style(curMon);
+  if(has('who','builder','built by','king','queen','emperor','किसने','निर्माता','राजा','रानी'))return g.builder(curMon);
+  if(has('hotspot','point','interest','see','explore','देख','बिंदु','हॉटस्पॉट'))return g.hotspots(curMon);
+  if(has('story','history','significance','important','special','why','इतिहास','कहानी','महत्व','प्रसिद्ध'))return g.story(curMon);
+  if(has('tag','unesco','famous','यूनेस्को'))return g.known(curMon);
+  return g.fallback(curMon);
+}
+function getAiGuideAnswerInteractive(question){
+  const answer=getAiGuideAnswer(question);
+  if(!curMon)return answer;
+  const topic=findHotspotAnswer(question);
+  aiGuide.lastTopic=topic?.t||question;
+  const next=Object.values(curMon.hs||{}).find(h=>h.t!==topic?.t)?.t;
+  return answer+(next?` You can also ask me about ${next}.`:'');
+}
+function askAiGuide(){
+  const input=document.getElementById('aiQuestion'),st=document.getElementById('aiChatStatus');
+  const question=(input?.value||'').trim();
+  if(!question){toast('Ask the guide a question first','er',1800);return}
+  addAiMessage('user',question);
+  aiGuide.lastQuestion=question;
+  if(input)input.value='';
+  if(st)st.textContent='Thinking...';
+  const answer=getAiGuideAnswerInteractive(question);
+  setTimeout(()=>{addAiMessage('guide',answer);if(st)st.textContent='Answered';speakText(answer,'AI chat answer')},220);
+}
+function startVoiceQuestion(){
+  const Rec=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const st=document.getElementById('aiChatStatus'),input=document.getElementById('aiQuestion');
+  if(!Rec){toast('Voice questions are not supported in this browser','er',3000);return}
+  const rec=new Rec();
+  rec.lang=document.getElementById('agVoice')?.value||'en-IN';
+  rec.interimResults=false;
+  rec.maxAlternatives=1;
+  rec.onstart=()=>{if(st)st.textContent='Listening...'};
+  rec.onresult=e=>{const text=e.results[0][0].transcript;if(input)input.value=text;askAiGuide()};
+  rec.onerror=()=>{if(st)st.textContent='Mic unavailable';toast('Could not hear the question','er',2500)};
+  rec.onend=()=>{if(st&&st.textContent==='Listening...')st.textContent='Ask by text or microphone'};
+  rec.start();
+}
 function playReen(r){toast('🎭 Re-enactment: '+r,'gd',3000)}
 
 // ═══════════════════════════════════════════════════════
@@ -1551,6 +1855,7 @@ function tmob(){mobOpen=!mobOpen;document.getElementById('mm').classList.toggle(
 function cmob(){mobOpen=false;document.getElementById('mm').classList.remove('open')}
 const ps=document.getElementById('pts');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='pt';p.style.cssText=`left:${Math.random()*100}%;animation-duration:${9+Math.random()*14}s;animation-delay:${Math.random()*13}s;--dx:${(Math.random()-.5)*130}px`;ps.appendChild(p)}
 window.addEventListener('load',()=>setTimeout(()=>document.getElementById('ld').classList.add('gone'),2800));
+if('speechSynthesis' in window){populateAudioVoices();speechSynthesis.onvoiceschanged=populateAudioVoices}
 buildCards();
 // Initialize doc panel with first episode
 setTimeout(()=>{if(DOCS[0]){selDocData(DOCS[0])}},100);

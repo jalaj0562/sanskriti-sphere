@@ -5,7 +5,7 @@
 import { 
   getAudioGuide, 
   getHotspotAudio, 
-  getMonumentHotspotAudio 
+  getMonumentHotspotAudio
 } from '../database/firebase-config.js';
 
 // Language Configuration
@@ -32,6 +32,31 @@ const LANGUAGES = {
   ru: { name: 'Русский', flag: '🇷🇺', region: 'Russia' },
   ko: { name: '한국어', flag: '🇰🇷', region: 'South Korea' },
   it: { name: 'Italiano', flag: '🇮🇹', region: 'Italy' }
+};
+
+const SUPPORTED_GUIDE_LANGUAGES = {
+  en: { name: 'English', flag: 'IN', region: 'India / Global' },
+  hi: { name: 'Hindi', flag: 'IN', region: 'North India' },
+  ta: { name: 'Tamil', flag: 'IN', region: 'Tamil Nadu' },
+  te: { name: 'Telugu', flag: 'IN', region: 'Andhra Pradesh / Telangana' },
+  kn: { name: 'Kannada', flag: 'IN', region: 'Karnataka' },
+  ml: { name: 'Malayalam', flag: 'IN', region: 'Kerala' },
+  gu: { name: 'Gujarati', flag: 'IN', region: 'Gujarat' },
+  mr: { name: 'Marathi', flag: 'IN', region: 'Maharashtra' },
+  bn: { name: 'Bengali', flag: 'IN', region: 'Bengal' },
+  pa: { name: 'Punjabi', flag: 'IN', region: 'Punjab' },
+  or: { name: 'Odia', flag: 'IN', region: 'Odisha' },
+  as: { name: 'Assamese', flag: 'IN', region: 'Assam' },
+  es: { name: 'Spanish', flag: 'ES', region: 'Global' },
+  fr: { name: 'French', flag: 'FR', region: 'Global' },
+  de: { name: 'German', flag: 'DE', region: 'Global' },
+  zh: { name: 'Chinese', flag: 'CN', region: 'Global' },
+  ja: { name: 'Japanese', flag: 'JP', region: 'Global' },
+  ar: { name: 'Arabic', flag: 'AR', region: 'Global' },
+  pt: { name: 'Portuguese', flag: 'PT', region: 'Global' },
+  ru: { name: 'Russian', flag: 'RU', region: 'Global' },
+  ko: { name: 'Korean', flag: 'KR', region: 'Global' },
+  it: { name: 'Italian', flag: 'IT', region: 'Global' }
 };
 
 // Global State
@@ -74,7 +99,7 @@ export async function initAudioGuide(monumentId) {
 // ═══ UI BUILDER ═══
 
 function buildAudioGuideUI() {
-  const languageButtons = Object.entries(LANGUAGES)
+  const languageButtons = Object.entries(SUPPORTED_GUIDE_LANGUAGES)
     .map(([code, lang]) => `
       <button 
         class="ag-lang-btn ${code === 'en' ? 'active' : ''}" 
@@ -178,6 +203,7 @@ function buildAudioGuideUI() {
         <h4>🎯 Points of Interest</h4>
         <div id="hotspotsList" class="ag-hotspots-list"></div>
       </div>
+
     </div>
   `;
 }
@@ -219,7 +245,7 @@ export async function switchLanguage(langCode) {
   event.target?.classList.add('active');
   
   // Update language info
-  const lang = LANGUAGES[langCode];
+  const lang = SUPPORTED_GUIDE_LANGUAGES[langCode];
   document.getElementById('langName').textContent = lang.name;
   document.getElementById('langRegion').textContent = lang.region;
   

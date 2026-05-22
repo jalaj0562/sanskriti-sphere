@@ -20,6 +20,7 @@ import {
   getStorage, 
   ref, 
   getBytes,
+  getDownloadURL,
   uploadBytes,
   deleteObject,
   listAll
@@ -38,6 +39,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+
+export const FIRST_FIVE_MONUMENT_IDS = [
+  'taj',
+  'red_fort',
+  'qutub',
+  'humayun',
+  'golconda'
+];
+
+export const SUPPORTED_AUDIO_LANGUAGES = [
+  'en', 'hi', 'ta', 'te', 'kn', 'ml', 'gu', 'mr', 'bn', 'pa', 'or', 'as',
+  'es', 'fr', 'de', 'zh', 'ja', 'ar', 'pt', 'ru', 'ko', 'it'
+];
+
+export function buildAudioGuideStoragePath(monumentId, language) {
+  return `audio/guides/${monumentId}/${language}.mp3`;
+}
+
+export function buildModelStoragePath(monumentId, fileName = `${monumentId}.glb`) {
+  return `models/3d/${monumentId}/${fileName}`;
+}
 
 console.log('🔥 Firebase initialized for Sanskriti Sphere');
 
@@ -165,7 +187,7 @@ export async function getAllAudioGuides(monumentId) {
 export async function uploadAudioGuide(monumentId, language, audioFile, metadata) {
   try {
     // Upload file to Storage
-    const storagePath = `audio/guides/${monumentId}-${language}.mp3`;
+    const storagePath = buildAudioGuideStoragePath(monumentId, language);
     const storageRef = ref(storage, storagePath);
     await uploadBytes(storageRef, audioFile);
     console.log(`✅ Audio file uploaded: ${storagePath}`);
@@ -318,7 +340,7 @@ export async function get3DModel(monumentId) {
  */
 export async function upload3DModel(monumentId, glbFile, metadata) {
   try {
-    const storagePath = `models/3d/${monumentId}/${glbFile.name}`;
+    const storagePath = buildModelStoragePath(monumentId, glbFile.name);
     const storageRef = ref(storage, storagePath);
     await uploadBytes(storageRef, glbFile);
     
@@ -344,11 +366,46 @@ export async function upload3DModel(monumentId, glbFile, metadata) {
 /**
  * Get download URL for audio file
  */
+export function createFirstFiveAssetManifest() {
+  return FIRST_FIVE_MONUMENT_IDS.map(monumentId => ({
+    monumentId,
+    audioGuides: SUPPORTED_AUDIO_LANGUAGES.map(language => ({
+      id: `${monumentId}-${language}`,
+      language,
+      audioStoragePath: buildAudioGuideStoragePath(monumentId, language),
+      contentType: 'audio/mpeg'
+    })),
+    threeDModel: {
+      id: monumentId,
+      modelStoragePath: buildModelStoragePath(monumentId),
+      format: 'glb',
+      contentType: 'model/gltf-binary'
+    }
+  }));
+}
+
+export async function getMonumentAssetBundle(monumentId, language = 'en') {
+  const [monument, audioGuide, allAudioGuides, threeDModel] = await Promise.all([
+    getMonumentData(monumentId),
+    getAudioGuide(monumentId, language),
+    getAllAudioGuides(monumentId),
+    get3DModel(monumentId)
+  ]);
+
+  return {
+    monument,
+    selectedAudioGuide: audioGuide,
+    audioGuides: allAudioGuides,
+    threeDModel,
+    expectedAudioLanguages: SUPPORTED_AUDIO_LANGUAGES,
+    isFirstFiveAudioEnabled: FIRST_FIVE_MONUMENT_IDS.includes(monumentId)
+  };
+}
+
 async function getAudioDownloadUrl(storagePath) {
   try {
     const fileRef = ref(storage, storagePath);
-    const url = await getBytes(fileRef);
-    return URL.createObjectURL(new Blob([url]));
+    return await getDownloadURL(fileRef);
   } catch (error) {
     console.error('Error getting audio URL:', error);
     return null;
@@ -361,8 +418,7 @@ async function getAudioDownloadUrl(storagePath) {
 async function getModelDownloadUrl(storagePath) {
   try {
     const fileRef = ref(storage, storagePath);
-    const bytes = await getBytes(fileRef);
-    return URL.createObjectURL(new Blob([bytes]));
+    return await getDownloadURL(fileRef);
   } catch (error) {
     console.error('Error getting model URL:', error);
     return null;
@@ -420,7 +476,11 @@ export default {
   // 3D Models
   get3DModel,
   upload3DModel,
+  getMonumentAssetBundle,
+  createFirstFiveAssetManifest,
   
   // Storage
-  downloadForOffline
+  downloadForOffline,
+  FIRST_FIVE_MONUMENT_IDS,
+  SUPPORTED_AUDIO_LANGUAGES
 };
